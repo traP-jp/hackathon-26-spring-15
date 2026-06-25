@@ -6,5 +6,5 @@
 - [ ] nocchi_ioio
 - [ ] koriyama
 - [ ] AmatsukaIruka
-- [ ] async0x4c
+- [x] async0x4c
 - [ ] Reia
