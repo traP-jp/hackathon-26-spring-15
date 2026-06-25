@@ -2,7 +2,7 @@
 
 自分の欄にチェックを入れてください！
 
-- [ ] hijoushiki
+- [x] hijoushiki
 - [ ] nocchi_ioio
 - [ ] koriyama
 - [ ] AmatsukaIruka
