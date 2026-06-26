@@ -4,7 +4,7 @@
 
 - [x] hijoushiki
 - [x] nocchi_ioio
-- [ ] koriyama
+- [x] koriyama
 - [ ] AmatsukaIruka
 - [x] async0x4c
 - [ ] Reia
