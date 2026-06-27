@@ -15,6 +15,12 @@ namespace MyProject.View
         [SerializeField]
         float nearBackgroundWidth = 19.2f;
         [SerializeField]
+        GameObject middleBackground;
+        [SerializeField]
+        Transform middleBackgroundParent;
+        [SerializeField]
+        float middleBackgroundWidth = 19.2f;
+        [SerializeField]
         GameObject farBackground;
         [SerializeField]
         Transform farBackgroundParent;
@@ -28,6 +34,7 @@ namespace MyProject.View
         List<GameObject> sampleGameObjects = new();
 
         ParallaxBackground nearParallaxBackground;
+        ParallaxBackground middleParallaxBackground;
         ParallaxBackground farParallaxBackground;
 
         class ParallaxBackground
@@ -124,6 +131,15 @@ namespace MyProject.View
                 0f,
                 0f
             );
+            middleParallaxBackground = new ParallaxBackground(
+                camera,
+                middleBackground,
+                middleBackgroundParent,
+                middleBackgroundWidth,
+                1,
+                0.5f,
+                0f
+            );
             farParallaxBackground = new ParallaxBackground(
                 camera,
                 farBackground,
@@ -163,6 +179,7 @@ namespace MyProject.View
         void Update()
         {
             nearParallaxBackground.Update();
+            middleParallaxBackground.Update();
             farParallaxBackground.Update();
         }
 

@@ -44,6 +44,9 @@ TagManager:
   - name: FarBackground
     uniqueID: 804385965
     locked: 0
+  - name: MiddleBackground
+    uniqueID: 893486715
+    locked: 0
   - name: NearBackground
     uniqueID: 1785600907
     locked: 0
