@@ -15,6 +15,111 @@ public class WorldSpawner : MonoBehaviour
     uint floorMargin = 2;
     List<GameObject> floors;
     float floorWidth;
+
+    [SerializeField]
+    GameObject nearBackground;
+    [SerializeField]
+    GameObject farBackground;
+
+    ParallaxBackground nearParallaxBackground;
+    ParallaxBackground farParallaxBackground;
+
+    class ParallaxBackground
+    {
+        readonly Camera camera;
+        readonly List<GameObject> backgrounds = new List<GameObject>();
+        readonly float width;
+        readonly uint margin;
+        readonly float factor;
+        readonly float offsetY;
+
+        /// <summary>
+        /// 背景のインスタンスを生成
+        /// </summary>
+        /// <param name="camera">背景が追従するカメラ</param>
+        /// <param name="background">背景のPrefab</param>
+        /// <param name="margin">左右にいくつ背景を複製するか</param>
+        /// <param name="factor">視差の強さ。0に近づくほどカメラに追従して変化し、1に近づくほどスクロールが遅くなる</param>
+        /// <param name="offsetY">Y方向の背景のオフセット</param>
+        public ParallaxBackground(Camera camera, GameObject background, uint margin, float factor, float offsetY)
+        {
+            SpriteRenderer spriteRenderer = background.GetComponent<SpriteRenderer>();
+
+            if (spriteRenderer == null)
+            {
+                Debug.LogError("background does not have SpriteRenderer.");
+            }
+            else
+            {
+                width = spriteRenderer.sprite.rect.width / spriteRenderer.sprite.pixelsPerUnit * background.transform.localScale.x;
+            }
+
+            this.camera = camera;
+            this.margin = margin;
+            this.factor = factor;
+            this.offsetY = offsetY;
+
+            int cameraIndex = GetIndex(camera.transform.position.x * (1f - factor));
+
+            for (int i = 0; i < 1 + margin * 2; i++)
+            {
+                GameObject gameObject = Instantiate(
+                    background,
+                    new Vector3(
+                        IndexToPosition(cameraIndex - (int)margin + i),
+                        offsetY,
+                        0
+                    ),
+                    Quaternion.identity
+                );
+                backgrounds.Add(gameObject);
+            }
+        }
+
+        public void Update()
+        {
+            int cameraIndex = GetIndex(camera.transform.position.x * (1f - factor));
+
+            for (int i = 0; i < backgrounds.Count; i++)
+            {
+                backgrounds[i].transform.position = new Vector3(
+                  IndexToPosition(cameraIndex - (int)margin + i),
+                  offsetY,
+                  0f
+                ) + camera.transform.position * factor;
+            }
+        }
+
+        int GetIndex(float x)
+        {
+            return (int)MathF.Round(x / width);
+        }
+
+        float IndexToPosition(int index)
+        {
+            return index * width;
+        }
+    }
+
+    void Awake()
+    {
+        Camera camera = Camera.main;
+        nearParallaxBackground = new ParallaxBackground(
+            camera,
+            nearBackground,
+            1,
+            0f,
+            0f
+        );
+        farParallaxBackground = new ParallaxBackground(
+            camera,
+            farBackground,
+            1,
+            0.5f,
+            0f
+        );
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -50,6 +155,8 @@ public class WorldSpawner : MonoBehaviour
     void Update()
     {
         GenerateFloor();
+        nearParallaxBackground.Update();
+        farParallaxBackground.Update();
     }
 
     void GenerateFloor()
@@ -97,7 +204,7 @@ public class WorldSpawner : MonoBehaviour
 
     int GetIndex(float x)
     {
-        return (int)MathF.Floor(x / floorWidth);
+        return (int)MathF.Round(x / floorWidth);
     }
 
     float IndexToPosition(int index)
