@@ -6,7 +6,7 @@ using UnityEngine;
 public class WorldSpawner : MonoBehaviour
 {
     [SerializeField]
-    Transform transform;
+    Transform playerTransform;
 
     [SerializeField]
     GameObject floor;
@@ -33,13 +33,13 @@ public class WorldSpawner : MonoBehaviour
         else
         {
             floorWidth = Vector2.Scale(collider.size, floor.transform.localScale).x;
-            int playerIndex = GetIndex(transform.position.x);
+            int playerIndex = GetIndex(playerTransform.position.x);
             for (int i = 0; i < floors.Count; i++)
             {
                 Transform transform = floors[i].transform;
                 transform.position = new Vector3(
                     IndexToPosition(playerIndex - (int)floorMargin + i),
-                    transform.position.x,
+                    transform.position.y,
                     transform.position.z
                 );
             }
@@ -54,7 +54,7 @@ public class WorldSpawner : MonoBehaviour
 
     void GenerateFloor()
     {
-        int playerIndex = GetIndex(transform.position.x);
+        int playerIndex = GetIndex(playerTransform.position.x);
         int currentCenter = GetIndex(floors[(int)floorMargin].transform.position.x);
         //プレイヤーが属するIndexが変化したら床の位置を更新する
         if(playerIndex < currentCenter)
