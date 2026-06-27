@@ -19,6 +19,7 @@ namespace MyProject.View
         [SerializeField] private float _moveSpeed = 3f;
         [SerializeField] private float _boostSpeed = 6f;
         [SerializeField] private float _jumpHeight = 2f;
+        [SerializeField] private Collider2D _floorCollider;
         [SerializeField] private int _maxHp = 100;
         [SerializeField, Min(0.01f)] private float _invincibleTime = 1.5f;
         [SerializeField, Min(0.01f)] private float _damageFlashDuration = 0.12f;
@@ -38,6 +39,11 @@ namespace MyProject.View
 
         public override void Initialize()
         {
+            if (_floorCollider == null)
+            {
+                throw new InvalidOperationException("PlayerView: FloorCollider が設定されていません。");
+            }
+
             _rb = GetComponent<Rigidbody2D>();
             _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
             _playerInput = GetComponent<PlayerInput>();
@@ -109,10 +115,11 @@ namespace MyProject.View
         {
             if(!context.performed) return;
 
-            bool isGround = Physics2D.Raycast(
+            var hits = Physics2D.RaycastAll(
                 (Vector2)transform.position + Vector2.down * 0.51f,
                 Vector2.down,
                 0.05f);
+            bool isGround = Array.Exists(hits, hit => hit.collider == _floorCollider);
 
             if(!isGround) return;
 

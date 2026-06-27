@@ -2089,7 +2089,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: MyProject.View::PlayerView
   _moveSpeed: 6
   _boostSpeed: 8
-  _jumpHeight: 5
+  _jumpHeight: 4
+  _floorCollider: {fileID: 514461688}
   _maxHp: 100
   _invincibleTime: 1.5
   _damageFlashDuration: 0.15
