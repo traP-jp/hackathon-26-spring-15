@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fdf5ed54b10bb74588cd2e87c0219b9, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: MyProject.Model::MyProject.Model.GameConfigSO
-  <InitialSceneType>k__BackingField: 1
+  <InitialSceneType>k__BackingField: 0

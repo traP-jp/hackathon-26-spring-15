@@ -43,6 +43,16 @@ namespace MyProject.Director
 
         public async UniTask AfterEnterAsync(CancellationToken ct)
         {
+            resultViewHub.Retry
+                .Take(1)
+                .Subscribe(_ => sceneChangeRequest.OnNext(SceneType.Game))
+                .AddTo(disposables);
+
+            resultViewHub.Quit
+                .Take(1)
+                .Subscribe(_ => sceneChangeRequest.OnNext(SceneType.Title))
+                .AddTo(disposables);
+
             await UniTask.CompletedTask;
         }
 

@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using R3;
 using UnityEngine;
 
 namespace MyProject.View
@@ -7,6 +8,9 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class ResultViewHub : SceneViewHubBase
     {
+        public Observable<Unit> Retry => resultActionsObserver.Retry;
+        public Observable<Unit> Quit => resultActionsObserver.Quit;
+
         ResultActionsObserver resultActionsObserver;
         ViewAnimationTimeline animationTimeline;
 
