@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,9 @@ namespace MyProject.View
     [RequireComponent(typeof(BoxCollider2D))]
     public class PlayerView : ViewBase
     {
+        public Observable<Unit> Damaged => damaged;
+        readonly Subject<Unit> damaged = new();
+
         [SerializeField] private float _moveSpeed = 3f;
         [SerializeField] private float _boostSpeed = 6f;
         [SerializeField] private float _jumpHeight = 2f;
@@ -99,6 +103,7 @@ namespace MyProject.View
             _hp -= damage;
             _hp = Mathf.Clamp(_hp, 0, _maxHp);
 
+            damaged.OnNext(Unit.Default);
             StartCoroutine(InvincibleCoroutine());
         }
 
@@ -110,6 +115,12 @@ namespace MyProject.View
             yield return new WaitForSeconds(_invincibleTime);
 
             _isInvincible = false;
+        }
+
+        void OnDestroy()
+        {
+            damaged.OnCompleted();
+            damaged.Dispose();
         }
     }
 }

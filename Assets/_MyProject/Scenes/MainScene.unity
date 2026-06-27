@@ -1639,8 +1639,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58d520d13a7327349b0ee08f7b2c6e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1532929578}
+  player: {fileID: 1532929579}
   followTarget: {fileID: 1238588153}
+  shakeVelocity: {x: 1.2, y: 0.8, z: 0}
 --- !u!114 &1238588155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1662,7 +1663,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    ImpulseDuration: 0.2
+    ImpulseDuration: 0.15
     ImpulseType: 0
     DissipationRate: 0.25
     RawSignal: {fileID: 0}
@@ -1693,7 +1694,7 @@ MonoBehaviour:
     DissipationMode: 2
     DissipationDistance: 100
     PropagationSpeed: 343
-  DefaultVelocity: {x: 0, y: -1, z: 0}
+  DefaultVelocity: {x: 1.2, y: 0.8, z: 0}
 --- !u!1 &1316483770
 GameObject:
   m_ObjectHideFlags: 0
@@ -2043,8 +2044,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5b9529e520dc4422bb374cabba65a74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::PlayerView
-  _moveSpeed: 3
-  _boostSpeed: 6
+  _moveSpeed: 6
+  _boostSpeed: 8
   _jumpHeight: 5
   _maxHp: 100
   _invincibleTime: 1.5

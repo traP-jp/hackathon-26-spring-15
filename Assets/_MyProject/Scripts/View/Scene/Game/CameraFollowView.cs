@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using R3;
 using UnityEngine;
 using Unity.Cinemachine;
 
@@ -8,14 +9,21 @@ namespace MyProject.View
     [RequireComponent(typeof(CinemachineImpulseSource))]
     public class CameraFollowView : ViewBase
     {
-        [SerializeField] Transform player;
+        [SerializeField] PlayerView player;
         [SerializeField] Transform followTarget;
+        [SerializeField] Vector3 shakeVelocity = new(1.2f, 0.8f, 0f);
 
+        readonly CompositeDisposable disposables = new();
         CinemachineImpulseSource impulseSource;
 
         public override void Initialize()
         {
+            disposables.Clear();
             impulseSource = GetComponent<CinemachineImpulseSource>();
+
+            player.Damaged
+                .Subscribe(_ => ShakeCamera())
+                .AddTo(disposables);
             gameObject.SetActive(false);
         }
 
@@ -44,13 +52,18 @@ namespace MyProject.View
         void LateUpdate()
         {
             var position = followTarget.position;
-            position.x = player.position.x;
+            position.x = player.transform.position.x;
             followTarget.position = position;
         }
 
         public void ShakeCamera()
         {
-            impulseSource.GenerateImpulse();
+            impulseSource.GenerateImpulseWithVelocity(shakeVelocity);
+        }
+
+        void OnDestroy()
+        {
+            disposables.Dispose();
         }
     }
 }
