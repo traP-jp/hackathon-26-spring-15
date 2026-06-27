@@ -21,6 +21,10 @@ namespace MyProject.View
         [SerializeField]
         float farBackgroundWidth = 19.2f;
         [SerializeField]
+        Transform player;
+        [SerializeField]
+        Transform floorCollider;
+        [SerializeField]
         List<GameObject> sampleGameObjects = new();
 
         ParallaxBackground nearParallaxBackground;
@@ -160,6 +164,13 @@ namespace MyProject.View
         {
             nearParallaxBackground.Update();
             farParallaxBackground.Update();
+        }
+
+        void LateUpdate()
+        {
+            var position = floorCollider.position;
+            position.x = player.position.x;
+            floorCollider.position = position;
         }
 
         void HideSampleGameObjects()
