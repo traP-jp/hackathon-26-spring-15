@@ -58,9 +58,15 @@ public class PlayerView : MonoBehaviour
     }
 
     // ダメージ管理
-    public void Damage(int damage)
+    public void Damage(int damage, GimmickType type)
     {
         if (_isInvincible) return;
+
+        // ダッシュしていない時に当たる
+        if(type == GimmickType.OnlyWhenNotDashing && _isBoost) return;
+
+        // ダッシュ中に当たる
+        if(type == GimmickType.OnlyWhenDashing && !_isBoost) return;
 
         _hp -= damage;
         _hp = Mathf.Clamp(_hp, 0, _maxHp);
