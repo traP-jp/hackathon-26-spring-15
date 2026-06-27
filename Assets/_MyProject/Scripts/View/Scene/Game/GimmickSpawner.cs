@@ -1,36 +1,95 @@
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class GimmickSpawner : MonoBehaviour
+namespace MyProject.View
 {
-    [SerializeField] private Transform player_transform;
-    [SerializeField] private GameObject wall_prefab;
-    private int wall_number_count = 0;
-    [SerializeField] private int wall_distant = 5;
-    private List<GameObject> walls;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class GimmickSpawner : ViewBase
     {
-        walls = new List<GameObject>();
-    }
+        [SerializeField] private Transform player_transform;
+        [SerializeField] private GimmickView wall_prefab;
+        private int wall_number_count = 0;
+        [SerializeField] private int wall_distant = 5;
+        readonly List<GimmickView> walls = new();
+        bool isSpawning;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (player_transform.position.x >= wall_number_count * wall_distant)
+        public override void Initialize()
         {
-            Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
-            GameObject newwall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity) as GameObject;
-            walls.Add(newwall);
+            ResetState();
+            gameObject.SetActive(false);
+        }
 
-            if (walls.Count >= 10)
+        public void StartSpawn()
+        {
+            isSpawning = true;
+        }
+
+        public void StopSpawn()
+        {
+            isSpawning = false;
+        }
+
+        public override void Show()
+        {
+            ResetState();
+            gameObject.SetActive(true);
+        }
+
+        public override void Hide()
+        {
+            ResetState();
+            gameObject.SetActive(false);
+        }
+
+        public void ResetState()
+        {
+            StopSpawn();
+            wall_number_count = 0;
+
+            foreach (var wall in walls)
             {
-                Destroy(walls[0]);
-                walls.RemoveAt(0);
+                Destroy(wall.gameObject);
             }
 
-            wall_number_count += 1;
+            walls.Clear();
+        }
+
+        public override UniTask ShowAsync(CancellationToken ct)
+        {
+            Show();
+            return UniTask.CompletedTask;
+        }
+
+        public override UniTask HideAsync(CancellationToken ct)
+        {
+            Hide();
+            return UniTask.CompletedTask;
+        }
+
+        void Update()
+        {
+            if (!isSpawning)
+            {
+                return;
+            }
+
+            if (player_transform.position.x >= wall_number_count * wall_distant)
+            {
+                Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
+                GimmickView newWall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity, transform);
+                newWall.Initialize();
+                newWall.Show();
+                walls.Add(newWall);
+
+                if (walls.Count >= 10)
+                {
+                    Destroy(walls[0].gameObject);
+                    walls.RemoveAt(0);
+                }
+
+                wall_number_count += 1;
+            }
         }
     }
 }
-

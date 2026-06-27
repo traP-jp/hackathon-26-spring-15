@@ -1,8 +1,9 @@
-using UnityEngine;
-
-public enum GimmickType
+namespace MyProject.View
+{
+    public enum GimmickType
     {
         AlwaysHit,
         OnlyWhenNotDashing,
         OnlyWhenDashing
     }
+}

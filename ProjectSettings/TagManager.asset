@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags: []
   layers:
   - Default
@@ -41,3 +41,21 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: FarBackground
+    uniqueID: 804385965
+    locked: 0
+  - name: MiddleBackground
+    uniqueID: 893486715
+    locked: 0
+  - name: NearBackground
+    uniqueID: 1785600907
+    locked: 0
+  - name: Gimmick
+    uniqueID: 14151771
+    locked: 0
+  - name: Player
+    uniqueID: 557181915
+    locked: 0
+  m_RenderingLayers:
+  - Default
+  m_MigratedRenderPipelines: []

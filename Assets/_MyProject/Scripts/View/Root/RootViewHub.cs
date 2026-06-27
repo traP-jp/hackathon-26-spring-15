@@ -10,13 +10,12 @@ namespace MyProject.View
         [SerializeField] StandardSliderView audioSlider;
         [SerializeField] AudioButtonView audioButton;
 
-        readonly List<ViewBase> views = new();
+        [SerializeField] ViewBase[] views;
 
         public void Initialize()
         {
             gameObject.SetActive(true);
 
-            RegisterViews();
             foreach (var view in views)
             {
                 view.Initialize();
@@ -24,13 +23,6 @@ namespace MyProject.View
             }
 
             BindAudioViews();
-        }
-
-        void RegisterViews()
-        {
-            views.Clear();
-            views.Add(audioSlider);
-            views.Add(audioButton);
         }
 
         void BindAudioViews()

@@ -8,9 +8,11 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class GameViewHub : SceneViewHubBase
     {
-        public Observable<Unit> Quit => quitButton.Clicked;
+        public Observable<Unit> Quit => gameActionsObserver.Quit;
+        public Observable<int> PlayerDamaged => player.Damaged;
 
-        [SerializeField] StandardButtonView quitButton;
+        [SerializeField] PlayerView player;
+        [SerializeField] GimmickSpawner gimmickSpawner;
 
         GameActionsObserver gameActionsObserver;
         ViewAnimationTimeline animationTimeline;
@@ -21,6 +23,7 @@ namespace MyProject.View
             animationTimeline = GetComponent<ViewAnimationTimeline>();
 
             gameActionsObserver.Disable();
+            gimmickSpawner.ResetState();
             animationTimeline.Initialize();
             gameObject.SetActive(false);
         }
@@ -34,6 +37,8 @@ namespace MyProject.View
 
         public override async UniTask HideAsync(CancellationToken ct)
         {
+            player.SetInputEnabled(false);
+            gimmickSpawner.StopSpawn();
             gameActionsObserver.Disable();
             await animationTimeline.HideAsync(ct);
             gameObject.SetActive(false);
@@ -41,11 +46,15 @@ namespace MyProject.View
 
         public async UniTask ShowStartGameAsync(CancellationToken ct)
         {
+            player.SetInputEnabled(true);
+            gimmickSpawner.StartSpawn();
             await UniTask.CompletedTask;
         }
 
         public async UniTask ShowFinishGameAsync(CancellationToken ct)
         {
+            player.SetInputEnabled(false);
+            gimmickSpawner.StopSpawn();
             await UniTask.CompletedTask;
         }
 

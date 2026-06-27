@@ -95,7 +95,7 @@ namespace MyProject.View
             ""id"": ""3d628d34-7cbc-4a47-9eef-0b318b71426a"",
             ""actions"": [
                 {
-                    ""name"": ""New action"",
+                    ""name"": ""Quit"",
                     ""type"": ""Button"",
                     ""id"": ""c2c61ffb-a627-4f9f-8a0c-1299a7bcbd49"",
                     ""expectedControlType"": """",
@@ -108,11 +108,11 @@ namespace MyProject.View
                 {
                     ""name"": """",
                     ""id"": ""8dfad4ef-cad6-4b52-b9f7-7bdeb7562d45"",
-                    ""path"": """",
+                    ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""Quit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -123,7 +123,7 @@ namespace MyProject.View
 }");
             // Main
             m_Main = asset.FindActionMap("Main", throwIfNotFound: true);
-            m_Main_Newaction = m_Main.FindAction("New action", throwIfNotFound: true);
+            m_Main_Quit = m_Main.FindAction("Quit", throwIfNotFound: true);
         }
 
         ~@GameActions()
@@ -204,7 +204,7 @@ namespace MyProject.View
         // Main
         private readonly InputActionMap m_Main;
         private List<IMainActions> m_MainActionsCallbackInterfaces = new List<IMainActions>();
-        private readonly InputAction m_Main_Newaction;
+        private readonly InputAction m_Main_Quit;
         /// <summary>
         /// Provides access to input actions defined in input action map "Main".
         /// </summary>
@@ -217,9 +217,9 @@ namespace MyProject.View
             /// </summary>
             public MainActions(@GameActions wrapper) { m_Wrapper = wrapper; }
             /// <summary>
-            /// Provides access to the underlying input action "Main/Newaction".
+            /// Provides access to the underlying input action "Main/Quit".
             /// </summary>
-            public InputAction @Newaction => m_Wrapper.m_Main_Newaction;
+            public InputAction @Quit => m_Wrapper.m_Main_Quit;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -246,9 +246,9 @@ namespace MyProject.View
             {
                 if (instance == null || m_Wrapper.m_MainActionsCallbackInterfaces.Contains(instance)) return;
                 m_Wrapper.m_MainActionsCallbackInterfaces.Add(instance);
-                @Newaction.started += instance.OnNewaction;
-                @Newaction.performed += instance.OnNewaction;
-                @Newaction.canceled += instance.OnNewaction;
+                @Quit.started += instance.OnQuit;
+                @Quit.performed += instance.OnQuit;
+                @Quit.canceled += instance.OnQuit;
             }
 
             /// <summary>
@@ -260,9 +260,9 @@ namespace MyProject.View
             /// <seealso cref="MainActions" />
             private void UnregisterCallbacks(IMainActions instance)
             {
-                @Newaction.started -= instance.OnNewaction;
-                @Newaction.performed -= instance.OnNewaction;
-                @Newaction.canceled -= instance.OnNewaction;
+                @Quit.started -= instance.OnQuit;
+                @Quit.performed -= instance.OnQuit;
+                @Quit.canceled -= instance.OnQuit;
             }
 
             /// <summary>
@@ -304,12 +304,12 @@ namespace MyProject.View
         public interface IMainActions
         {
             /// <summary>
-            /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// Method invoked when associated input action "Quit" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnNewaction(InputAction.CallbackContext context);
+            void OnQuit(InputAction.CallbackContext context);
         }
     }
 }

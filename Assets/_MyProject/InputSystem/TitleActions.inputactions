@@ -7,7 +7,7 @@
             "id": "c95876ed-8a2b-4d2e-86bc-f2a0c105e92d",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "StartGame",
                     "type": "Button",
                     "id": "47e32425-db64-419f-b9be-d8d99d353166",
                     "expectedControlType": "",
@@ -20,11 +20,11 @@
                 {
                     "name": "",
                     "id": "13c91ba8-d54a-496c-b3cc-82e50b46824c",
-                    "path": "",
+                    "path": "<Keyboard>/anyKey",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "StartGame",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

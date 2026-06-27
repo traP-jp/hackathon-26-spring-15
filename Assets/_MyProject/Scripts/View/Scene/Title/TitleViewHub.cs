@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using R3;
 using UnityEngine;
 
 namespace MyProject.View
@@ -7,6 +8,8 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class TitleViewHub : SceneViewHubBase
     {
+        public Observable<Unit> StartGame => titleActionsObserver.StartGame;
+
         TitleActionsObserver titleActionsObserver;
         ViewAnimationTimeline animationTimeline;
 

@@ -7,9 +7,18 @@
             "id": "1330a462-fb3b-4824-a680-63531279cafd",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "Retry",
                     "type": "Button",
                     "id": "f5c6e75b-6291-413a-be2b-d437b6cb3f76",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Quit",
+                    "type": "Button",
+                    "id": "948573a2-214b-4695-a3a7-3f18bdd6ee5c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -20,11 +29,22 @@
                 {
                     "name": "",
                     "id": "d310ffc9-5dae-4f1c-a80d-cae5ae3b8227",
-                    "path": "",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Retry",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71eba03e-e171-478e-b1e3-d0e1322b57de",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Quit",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
