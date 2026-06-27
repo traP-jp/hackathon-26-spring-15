@@ -13,20 +13,17 @@ namespace MyProject.View
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerView : ViewBase
     {
-        public Observable<Unit> Damaged => damaged;
-        readonly Subject<Unit> damaged = new();
+        public Observable<int> Damaged => damaged;
+        readonly Subject<int> damaged = new();
 
         [SerializeField] private float _moveSpeed = 3f;
         [SerializeField] private float _boostSpeed = 6f;
         [SerializeField] private float _jumpHeight = 2f;
         [SerializeField] private Collider2D _floorCollider;
-        [SerializeField] private int _maxHp = 100;
         [SerializeField, Min(0.01f)] private float _invincibleTime = 1.5f;
         [SerializeField, Min(0.01f)] private float _damageFlashDuration = 0.12f;
         [SerializeField, Range(0f, 1f)] private float _invincibleDarkAmount = 0.45f;
         [SerializeField, Min(0.01f)] private float _invincibleBlinkInterval = 0.08f;
-
-        public int _hp {get; private set;}
 
         private Rigidbody2D _rb;
         private PlayerInput _playerInput;
@@ -53,6 +50,7 @@ namespace MyProject.View
             initialLocalRotation = transform.localRotation;
             CacheSpriteColors();
             ResetState();
+            SetInputEnabled(false);
             gameObject.SetActive(false);
         }
 
@@ -99,8 +97,6 @@ namespace MyProject.View
         public void ResetState()
         {
             CancelInvincible();
-            SetInputEnabled(false);
-            _hp = _maxHp;
             _isBoost = false;
             transform.localPosition = initialLocalPosition;
             transform.localRotation = initialLocalRotation;
@@ -154,10 +150,7 @@ namespace MyProject.View
             // ダッシュ中に当たる
             if(type == GimmickType.OnlyWhenDashing && !_isBoost) return;
 
-            _hp -= damage;
-            _hp = Mathf.Clamp(_hp, 0, _maxHp);
-
-            damaged.OnNext(Unit.Default);
+            damaged.OnNext(damage);
             StartInvincible();
         }
 

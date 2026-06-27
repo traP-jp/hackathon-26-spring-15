@@ -97,12 +97,16 @@ namespace MyProject.Director
                 .Take(1)
                 .Subscribe(_ => sceneChangeRequest.OnNext(SceneType.Title))
                 .AddTo(disposables);
+
+            gameViewHub.PlayerDamaged
+                .Subscribe(gameSessionModel.TakeDamage)
+                .AddTo(disposables);
         }
 
         async UniTask StartGameAsync(CancellationToken ct)
         {
-            await gameViewHub.ShowStartGameAsync(ct);
             gameSessionModel.Start();
+            await gameViewHub.ShowStartGameAsync(ct);
         }
 
         async UniTask HandleGameFinishedAsync(CancellationToken ct)

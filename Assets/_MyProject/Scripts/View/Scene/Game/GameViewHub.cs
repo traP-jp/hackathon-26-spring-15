@@ -9,6 +9,7 @@ namespace MyProject.View
     public class GameViewHub : SceneViewHubBase
     {
         public Observable<Unit> Quit => gameActionsObserver.Quit;
+        public Observable<int> PlayerDamaged => player.Damaged;
 
         [SerializeField] PlayerView player;
         [SerializeField] GimmickSpawner gimmickSpawner;
@@ -22,7 +23,6 @@ namespace MyProject.View
             animationTimeline = GetComponent<ViewAnimationTimeline>();
 
             gameActionsObserver.Disable();
-            player.Hide();
             gimmickSpawner.ResetState();
             animationTimeline.Initialize();
             gameObject.SetActive(false);
@@ -31,10 +31,8 @@ namespace MyProject.View
         public override async UniTask ShowAsync(CancellationToken ct)
         {
             gameObject.SetActive(true);
-            player.Show();
             await animationTimeline.ShowAsync(ct);
             gameActionsObserver.Enable();
-            player.SetInputEnabled(true);
         }
 
         public override async UniTask HideAsync(CancellationToken ct)
@@ -42,19 +40,20 @@ namespace MyProject.View
             player.SetInputEnabled(false);
             gimmickSpawner.StopSpawn();
             gameActionsObserver.Disable();
-            player.Hide();
             await animationTimeline.HideAsync(ct);
             gameObject.SetActive(false);
         }
 
         public async UniTask ShowStartGameAsync(CancellationToken ct)
         {
+            player.SetInputEnabled(true);
             gimmickSpawner.StartSpawn();
             await UniTask.CompletedTask;
         }
 
         public async UniTask ShowFinishGameAsync(CancellationToken ct)
         {
+            player.SetInputEnabled(false);
             gimmickSpawner.StopSpawn();
             await UniTask.CompletedTask;
         }
