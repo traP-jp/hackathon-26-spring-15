@@ -3,34 +3,30 @@ using Unity.Cinemachine;
 
 public class CameraView : MonoBehaviour
 {
-    [SerializeField] GameObject _player;
-    [SerializeField] private CinemachineCamera virtualCamera;
-    private CinemachineBasicMultiChannelPerlin noise;
+    [SerializeField] private GameObject _player;
+    private CinemachineImpulseSource impulseSource;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        noise = virtualCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
+        // 衝撃を発生させるためのソースを取得
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(_player.transform.position.x, transform.position.y, transform.position.z);
+        // カメラのX軸をプレイヤーに追従させる
+        if (_player != null)
+        {
+            transform.position = new Vector3(_player.transform.position.x, transform.position.y, transform.position.z);
+        }
     }
 
-    public void Shake(float amplitude, float frequency, float duration)
+    // 被弾した時に外部からこのメソッドを呼ぶだけでOK
+    public void ShakeCamera()
     {
-        if (noise == null) return;
-
-        noise.AmplitudeGain = amplitude;
-        noise.FrequencyGain = frequency;
-        Invoke(nameof(StopShake), duration);
-    }
-
-     void StopShake()
-    {
-        noise.AmplitudeGain = 0f;
-        noise.FrequencyGain = 0f;
+        if (impulseSource != null)
+        {
+            impulseSource.GenerateImpulse();
+        }
     }
 }
