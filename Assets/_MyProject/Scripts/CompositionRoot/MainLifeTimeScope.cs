@@ -14,7 +14,6 @@ namespace MyProject.CompositionRoot
         [Header("View")]
         [SerializeField] RootViewHub rootViewHub;
         [SerializeField] TitleViewHub titleViewHub;
-        [SerializeField] SelectViewHub selectViewHub;
         [SerializeField] GameViewHub gameViewHub;
         [SerializeField] ResultViewHub resultViewHub;
 
@@ -43,7 +42,6 @@ namespace MyProject.CompositionRoot
         {
             builder.RegisterInstance(rootViewHub);
             builder.RegisterInstance(titleViewHub);
-            builder.RegisterInstance(selectViewHub);
             builder.RegisterInstance(gameViewHub);
             builder.RegisterInstance(resultViewHub);
         }
@@ -53,7 +51,6 @@ namespace MyProject.CompositionRoot
             builder.RegisterEntryPoint<MainEntryPoint>(Lifetime.Singleton);
             builder.Register<RootDirector>(Lifetime.Singleton);
             builder.Register<TitleDirector>(Lifetime.Singleton);
-            builder.Register<SelectDirector>(Lifetime.Singleton);
             builder.Register<GameDirector>(Lifetime.Singleton);
             builder.Register<ResultDirector>(Lifetime.Singleton);
         }

@@ -95,7 +95,7 @@ namespace MyProject.Director
         {
             gameViewHub.Quit
                 .Take(1)
-                .Subscribe(_ => sceneChangeRequest.OnNext(SceneType.Select))
+                .Subscribe(_ => sceneChangeRequest.OnNext(SceneType.Title))
                 .AddTo(disposables);
         }
 
