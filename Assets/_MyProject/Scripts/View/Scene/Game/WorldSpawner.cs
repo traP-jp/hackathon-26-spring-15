@@ -39,13 +39,26 @@ namespace MyProject.View
 
         class ParallaxBackground
         {
+            class BackgroundInstance
+            {
+                public GameObject GameObject { get; }
+                public int Index { get; set; }
+
+                public BackgroundInstance(GameObject gameObject, int index)
+                {
+                    GameObject = gameObject;
+                    Index = index;
+                }
+            }
+
             readonly Camera camera;
-            readonly List<GameObject> backgrounds = new List<GameObject>();
+            readonly List<BackgroundInstance> backgrounds = new List<BackgroundInstance>();
             readonly float width;
             readonly uint margin;
             readonly float factor;
             readonly float offsetY;
             readonly Transform parent;
+            readonly Action<GameObject> onPlaced;
 
             /// <summary>
             /// 背景のインスタンスを生成
@@ -57,7 +70,8 @@ namespace MyProject.View
             /// <param name="margin">左右にいくつ背景を複製するか</param>
             /// <param name="factor">視差の強さ。0に近づくほどカメラに追従して変化し、1に近づくほどスクロールが遅くなる</param>
             /// <param name="offsetY">Y方向の背景のオフセット</param>
-            public ParallaxBackground(Camera camera, GameObject background, Transform parent, float width, uint margin, float factor, float offsetY)
+            /// <param name="onPlaced">背景を初期配置または再配置したときの処理</param>
+            public ParallaxBackground(Camera camera, GameObject background, Transform parent, float width, uint margin, float factor, float offsetY, Action<GameObject> onPlaced = null)
             {
                 if (width <= 0f)
                 {
@@ -70,19 +84,19 @@ namespace MyProject.View
                 this.factor = factor;
                 this.offsetY = offsetY;
                 this.parent = parent;
+                this.onPlaced = onPlaced;
 
                 Vector3 cameraPosition = GetCameraPosition();
                 int cameraIndex = GetIndex(cameraPosition.x * (1f - factor));
 
                 for (int i = 0; i < 1 + margin * 2; i++)
                 {
+                    int index = cameraIndex - (int)margin + i;
                     GameObject gameObject = Instantiate(background, parent);
-                    gameObject.transform.localPosition = new Vector3(
-                        IndexToPosition(cameraIndex - (int)margin + i),
-                        offsetY,
-                        0
-                    );
-                    backgrounds.Add(gameObject);
+                    var instance = new BackgroundInstance(gameObject, index);
+                    SetPosition(instance, cameraPosition);
+                    onPlaced?.Invoke(gameObject);
+                    backgrounds.Add(instance);
                 }
             }
 
@@ -90,14 +104,29 @@ namespace MyProject.View
             {
                 Vector3 cameraPosition = GetCameraPosition();
                 int cameraIndex = GetIndex(cameraPosition.x * (1f - factor));
+                int firstIndex = cameraIndex - (int)margin;
+                int lastIndex = cameraIndex + (int)margin;
 
                 for (int i = 0; i < backgrounds.Count; i++)
                 {
-                    backgrounds[i].transform.localPosition = new Vector3(
-                      IndexToPosition(cameraIndex - (int)margin + i),
-                      offsetY,
-                      0f
-                    ) + cameraPosition * factor;
+                    bool placed = false;
+                    while (backgrounds[i].Index < firstIndex)
+                    {
+                        backgrounds[i].Index += backgrounds.Count;
+                        placed = true;
+                    }
+
+                    while (backgrounds[i].Index > lastIndex)
+                    {
+                        backgrounds[i].Index -= backgrounds.Count;
+                        placed = true;
+                    }
+
+                    SetPosition(backgrounds[i], cameraPosition);
+                    if (placed)
+                    {
+                        onPlaced?.Invoke(backgrounds[i].GameObject);
+                    }
                 }
             }
 
@@ -117,6 +146,15 @@ namespace MyProject.View
             {
                 return index * width;
             }
+
+            void SetPosition(BackgroundInstance background, Vector3 cameraPosition)
+            {
+                background.GameObject.transform.localPosition = new Vector3(
+                    IndexToPosition(background.Index),
+                    offsetY,
+                    0f
+                ) + cameraPosition * factor;
+            }
         }
 
         public override void Initialize()
@@ -129,7 +167,8 @@ namespace MyProject.View
                 nearBackgroundWidth,
                 1,
                 0f,
-                0f
+                0f,
+                RandomizeNearBackground
             );
             middleParallaxBackground = new ParallaxBackground(
                 camera,
@@ -196,6 +235,11 @@ namespace MyProject.View
             {
                 sampleGameObject.SetActive(false);
             }
+        }
+
+        static void RandomizeNearBackground(GameObject background)
+        {
+            background.GetComponent<NearBackgroundView>().RandomizeGridVisibility();
         }
     }
 }
