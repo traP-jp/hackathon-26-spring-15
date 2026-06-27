@@ -15,6 +15,7 @@ MonoBehaviour:
   sceneDatas_byGuid:
     keys:
     - 8c9cfa26abfee488c85f1582747f6a02
+    - 31cc4c94aed13244981053c3960021f0
     values:
     - goDatas_byGlobalId:
         keys:
@@ -171,6 +172,19 @@ MonoBehaviour:
           iconNameOrGuid: Folder Icon
           isIconRecursive: 0
           isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-1-31cc4c94aed13244981053c3960021f0-2528831624365624582-0
+        - globalObjectIdString: GlobalObjectId_V1-1-31cc4c94aed13244981053c3960021f0-5696801192816306743-0
+        values:
         - colorIndex: 0
           iconNameOrGuid: Folder Icon
           isIconRecursive: 0
