@@ -11,22 +11,48 @@ namespace MyProject.View
         [SerializeField] private GimmickView wall_prefab;
         private int wall_number_count = 0;
         [SerializeField] private int wall_distant = 5;
-        private List<GimmickView> walls;
+        readonly List<GimmickView> walls = new();
+        bool isSpawning;
 
         public override void Initialize()
         {
-            walls = new List<GimmickView>();
+            ResetState();
             gameObject.SetActive(false);
+        }
+
+        public void StartSpawn()
+        {
+            isSpawning = true;
+        }
+
+        public void StopSpawn()
+        {
+            isSpawning = false;
         }
 
         public override void Show()
         {
+            ResetState();
             gameObject.SetActive(true);
         }
 
         public override void Hide()
         {
+            ResetState();
             gameObject.SetActive(false);
+        }
+
+        public void ResetState()
+        {
+            StopSpawn();
+            wall_number_count = 0;
+
+            foreach (var wall in walls)
+            {
+                Destroy(wall.gameObject);
+            }
+
+            walls.Clear();
         }
 
         public override UniTask ShowAsync(CancellationToken ct)
@@ -43,6 +69,11 @@ namespace MyProject.View
 
         void Update()
         {
+            if (!isSpawning)
+            {
+                return;
+            }
+
             if (player_transform.position.x >= wall_number_count * wall_distant)
             {
                 Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);

@@ -1181,6 +1181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::MyProject.View.GameViewHub
   player: {fileID: 1532929579}
+  gimmickSpawner: {fileID: 1574526375}
 --- !u!114 &706006541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1193,7 +1194,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b6f7fde9c557343b45b21972f80b7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::MyProject.View.ViewAnimationTimeline
-  viewAnimations: []
+  viewAnimations:
+  - <View>k__BackingField: {fileID: 1574526375}
+    <ShowStartSeconds>k__BackingField: 0
+    <HideStartSeconds>k__BackingField: 0
 --- !u!1 &972869247
 GameObject:
   m_ObjectHideFlags: 0
@@ -1874,7 +1878,6 @@ MonoBehaviour:
   - {fileID: 1532929579}
   - {fileID: 1238588154}
   - {fileID: 1664012599}
-  - {fileID: 1574526375}
 --- !u!1 &1371877424
 GameObject:
   m_ObjectHideFlags: 0

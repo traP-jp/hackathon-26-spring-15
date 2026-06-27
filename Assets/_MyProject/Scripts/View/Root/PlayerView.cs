@@ -36,6 +36,8 @@ namespace MyProject.View
         private MotionHandle _invincibleVisualHandle;
         private bool _isBoost;
         private bool _isInvincible;
+        Vector3 initialLocalPosition;
+        Quaternion initialLocalRotation;
 
         public override void Initialize()
         {
@@ -47,20 +49,22 @@ namespace MyProject.View
             _rb = GetComponent<Rigidbody2D>();
             _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
             _playerInput = GetComponent<PlayerInput>();
+            initialLocalPosition = transform.localPosition;
+            initialLocalRotation = transform.localRotation;
             CacheSpriteColors();
-            _hp = _maxHp;
-            SetInputEnabled(false);
+            ResetState();
             gameObject.SetActive(false);
         }
 
         public override void Show()
         {
+            ResetState();
             gameObject.SetActive(true);
         }
 
         public override void Hide()
         {
-            CancelInvincible();
+            ResetState();
             gameObject.SetActive(false);
         }
 
@@ -90,6 +94,18 @@ namespace MyProject.View
             _isBoost = false;
             _playerInput.DeactivateInput();
             _playerInput.enabled = false;
+        }
+
+        public void ResetState()
+        {
+            CancelInvincible();
+            SetInputEnabled(false);
+            _hp = _maxHp;
+            _isBoost = false;
+            transform.localPosition = initialLocalPosition;
+            transform.localRotation = initialLocalRotation;
+            _rb.linearVelocity = Vector2.zero;
+            _rb.angularVelocity = 0f;
         }
 
         void FixedUpdate()
