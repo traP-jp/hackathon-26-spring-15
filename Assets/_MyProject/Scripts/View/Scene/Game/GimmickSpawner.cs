@@ -20,7 +20,7 @@ public class GimmickSpawner : MonoBehaviour
         if (player_transform.position.x >= wall_number_count * wall_distant)
         {
             Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
-            GameObject newwall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity) as GameObject;
+            GameObject newwall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity, transform);
             walls.Add(newwall);
 
             if (walls.Count >= 10)

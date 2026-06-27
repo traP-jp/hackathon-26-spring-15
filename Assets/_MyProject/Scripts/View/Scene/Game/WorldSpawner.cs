@@ -10,6 +10,8 @@ public class WorldSpawner : MonoBehaviour
 
     [SerializeField]
     GameObject floor;
+    [SerializeField]
+    Transform floorParent;
 
     //左右に生成する床の数
     uint floorMargin = 2;
@@ -19,7 +21,11 @@ public class WorldSpawner : MonoBehaviour
     [SerializeField]
     GameObject nearBackground;
     [SerializeField]
+    Transform nearBackgroundParent;
+    [SerializeField]
     GameObject farBackground;
+    [SerializeField]
+    Transform farBackgroundParent;
 
     ParallaxBackground nearParallaxBackground;
     ParallaxBackground farParallaxBackground;
@@ -32,16 +38,18 @@ public class WorldSpawner : MonoBehaviour
         readonly uint margin;
         readonly float factor;
         readonly float offsetY;
+        readonly Transform parent;
 
         /// <summary>
         /// 背景のインスタンスを生成
         /// </summary>
         /// <param name="camera">背景が追従するカメラ</param>
         /// <param name="background">背景のPrefab</param>
+        /// <param name="parent">生成した背景を配置する親</param>
         /// <param name="margin">左右にいくつ背景を複製するか</param>
         /// <param name="factor">視差の強さ。0に近づくほどカメラに追従して変化し、1に近づくほどスクロールが遅くなる</param>
         /// <param name="offsetY">Y方向の背景のオフセット</param>
-        public ParallaxBackground(Camera camera, GameObject background, uint margin, float factor, float offsetY)
+        public ParallaxBackground(Camera camera, GameObject background, Transform parent, uint margin, float factor, float offsetY)
         {
             SpriteRenderer spriteRenderer = background.GetComponent<SpriteRenderer>();
 
@@ -58,19 +66,18 @@ public class WorldSpawner : MonoBehaviour
             this.margin = margin;
             this.factor = factor;
             this.offsetY = offsetY;
+            this.parent = parent;
 
-            int cameraIndex = GetIndex(camera.transform.position.x * (1f - factor));
+            Vector3 cameraPosition = GetCameraPosition();
+            int cameraIndex = GetIndex(cameraPosition.x * (1f - factor));
 
             for (int i = 0; i < 1 + margin * 2; i++)
             {
-                GameObject gameObject = Instantiate(
-                    background,
-                    new Vector3(
-                        IndexToPosition(cameraIndex - (int)margin + i),
-                        offsetY,
-                        0
-                    ),
-                    Quaternion.identity
+                GameObject gameObject = Instantiate(background, parent);
+                gameObject.transform.localPosition = new Vector3(
+                    IndexToPosition(cameraIndex - (int)margin + i),
+                    offsetY,
+                    0
                 );
                 backgrounds.Add(gameObject);
             }
@@ -78,16 +85,24 @@ public class WorldSpawner : MonoBehaviour
 
         public void Update()
         {
-            int cameraIndex = GetIndex(camera.transform.position.x * (1f - factor));
+            Vector3 cameraPosition = GetCameraPosition();
+            int cameraIndex = GetIndex(cameraPosition.x * (1f - factor));
 
             for (int i = 0; i < backgrounds.Count; i++)
             {
-                backgrounds[i].transform.position = new Vector3(
+                backgrounds[i].transform.localPosition = new Vector3(
                   IndexToPosition(cameraIndex - (int)margin + i),
                   offsetY,
                   0f
-                ) + camera.transform.position * factor;
+                ) + cameraPosition * factor;
             }
+        }
+
+        Vector3 GetCameraPosition()
+        {
+            return parent == null
+                ? camera.transform.position
+                : parent.InverseTransformPoint(camera.transform.position);
         }
 
         int GetIndex(float x)
@@ -107,6 +122,7 @@ public class WorldSpawner : MonoBehaviour
         nearParallaxBackground = new ParallaxBackground(
             camera,
             nearBackground,
+            nearBackgroundParent,
             1,
             0f,
             0f
@@ -114,6 +130,7 @@ public class WorldSpawner : MonoBehaviour
         farParallaxBackground = new ParallaxBackground(
             camera,
             farBackground,
+            farBackgroundParent,
             1,
             0.5f,
             0f
@@ -126,7 +143,7 @@ public class WorldSpawner : MonoBehaviour
         floors = new List<GameObject>();
         for (int i = 0; i < 1 + floorMargin * 2; i++)
         {
-            floors.Add(Instantiate(floor));
+            floors.Add(Instantiate(floor, floorParent));
         }
 
         BoxCollider2D collider = floor.GetComponent<BoxCollider2D>();
@@ -138,14 +155,14 @@ public class WorldSpawner : MonoBehaviour
         else
         {
             floorWidth = Vector2.Scale(collider.size, floor.transform.localScale).x;
-            int playerIndex = GetIndex(playerTransform.position.x);
+            int playerIndex = GetIndex(GetPlayerPosition().x);
             for (int i = 0; i < floors.Count; i++)
             {
                 Transform transform = floors[i].transform;
-                transform.position = new Vector3(
+                transform.localPosition = new Vector3(
                     IndexToPosition(playerIndex - (int)floorMargin + i),
-                    transform.position.y,
-                    transform.position.z
+                    transform.localPosition.y,
+                    transform.localPosition.z
                 );
             }
         }
@@ -161,22 +178,22 @@ public class WorldSpawner : MonoBehaviour
 
     void GenerateFloor()
     {
-        int playerIndex = GetIndex(playerTransform.position.x);
-        int currentCenter = GetIndex(floors[(int)floorMargin].transform.position.x);
+        int playerIndex = GetIndex(GetPlayerPosition().x);
+        int currentCenter = GetIndex(floors[(int)floorMargin].transform.localPosition.x);
         //プレイヤーが属するIndexが変化したら床の位置を更新する
         if(playerIndex < currentCenter)
         {
             int offset = currentCenter - playerIndex;
-            int firstIndex = GetIndex(floors.First().transform.position.x);
+            int firstIndex = GetIndex(floors.First().transform.localPosition.x);
             for(int i = 0; i < offset; i++)
             {
                 GameObject last = floors.Last();
                 floors.RemoveAt(floors.Count - 1);
 
-                last.transform.position = new Vector3(
+                last.transform.localPosition = new Vector3(
                     IndexToPosition(firstIndex - i - 1),
-                    last.transform.position.y,
-                    last.transform.position.z
+                    last.transform.localPosition.y,
+                    last.transform.localPosition.z
                 );
 
                 floors.Insert(0, last);
@@ -185,21 +202,28 @@ public class WorldSpawner : MonoBehaviour
         else if(currentCenter < playerIndex)
         {
             int offset = playerIndex - currentCenter;
-            int lastIndex = GetIndex(floors.Last().transform.position.x);
+            int lastIndex = GetIndex(floors.Last().transform.localPosition.x);
             for(int i = 0; i < offset; i++)
             {
                 GameObject first = floors.First();
                 floors.RemoveAt(0);
 
-                first.transform.position = new Vector3(
+                first.transform.localPosition = new Vector3(
                     IndexToPosition(lastIndex + i + 1),
-                    first.transform.position.y,
-                    first.transform.position.z
+                    first.transform.localPosition.y,
+                    first.transform.localPosition.z
                 );
 
                 floors.Add(first);
             }
         }
+    }
+
+    Vector3 GetPlayerPosition()
+    {
+        return floorParent == null
+            ? playerTransform.position
+            : floorParent.InverseTransformPoint(playerTransform.position);
     }
 
     int GetIndex(float x)
