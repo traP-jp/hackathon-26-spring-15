@@ -8,9 +8,7 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class GameViewHub : SceneViewHubBase
     {
-        public Observable<Unit> Quit => quitButton.Clicked;
-
-        [SerializeField] StandardButtonView quitButton;
+        public Observable<Unit> Quit => gameActionsObserver.Quit;
 
         GameActionsObserver gameActionsObserver;
         ViewAnimationTimeline animationTimeline;
