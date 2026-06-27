@@ -1,57 +1,26 @@
-# Unity Single Scene Template
-
-単一のSceneでゲームを構成するUnityプロジェクトテンプレート
-
-## 使用方法
-
-### 0. 必要なものがインストールされているか確認
-
-- Git LFS
-    - `git lfs install` まで実行したか
-- EditorConfig拡張機能
-
-### 1. リポジトリを複製
-
-テンプレートをコピーしたあと、`git` 履歴を消して新しい履歴で開始する。
-
-1. `git clone [template-repository-url]`
-2. `cd unity-single-scene-template`
-3. `git lfs pull`
-4. `.git` ディレクトリを削除
-    - macOS / Linux: `rm -rf .git`
-    - Windows (PowerShell): `Remove-Item -Recurse -Force .git`
-5. `git init`
-6. `git remote add origin [new-repository-url]`
-7. `git add .`
-8. `git commit -m "Initial commit from template"`
-9. `git branch -M main`
-10. `git push -u origin main`
-
-### 2. 新プロジェクト用に修正
-
-- 名前の修正
-- 必要パッケージの追加インストール
-    - Cinemachine
-- 環境設定からAutoSaveを有効化
-- `README.md`, `AGENTS.md` を更新
-
-### 3. ビルド前
-
-- unityroomのHmac Keyを入力
-
----
-
-以下テンプレート
-
-# [ここにプロジェクト名を入力]
+# hackathon-26-spring-15
 
 made from [Unity Single Scene Template](https://github.com/kageki128/unity-single-scene-template)
 
-[ここにプロジェクトの説明を入力]
+春ハッカソン2026 15班
 
 ## ゲーム概要
 
-[ここにゲームの詳しい説明を入力]
+2Dのエンドレスな横スクロールランナー
+
+プレイヤーは常に右に移動している。プレイヤーは以下の操作ができる。
+
+- →キー: 加速
+- ↑キー: ジャンプ
+
+プレイヤーは最初、デフォルト速度で走っている。加速キーを押している間は加速時速度で走る。
+
+走っているとギミックが流れてくる。現状以下の通り(変更の予定あり)
+
+- 加速オブジェ: 加速しないで通過するとダメージ
+- 反加速オブジェ: 加速して通過するとダメージ
+
+クリアしたギミックの数を得点とする。
 
 ## 技術スタック
 
