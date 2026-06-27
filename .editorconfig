@@ -1,0 +1,100 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+tab_width = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+# アクセス修飾子の省略を許可
+dotnet_style_require_accessibility_modifiers = never
+
+# 名前空間とディレクトリ構成の不一致を許可
+dotnet_style_namespace_match_folder = false
+
+# using: Systemを先頭、グループ間の空行なし、namespaceの外に配置
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+csharp_using_directive_placement = outside_namespace:warning
+
+# 修飾子順序を統一。switch内のcaseを1段インデント
+csharp_preferred_modifier_order = public,private,protected,internal,file,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,required,volatile,async:suggestion
+csharp_indent_case_contents = true
+
+# readonlyフィールドを推奨
+dotnet_style_readonly_field = true:warning
+
+# 不要コード検出
+dotnet_diagnostic.IDE0005.severity = warning
+dotnet_diagnostic.IDE0052.severity = warning
+dotnet_diagnostic.IDE0060.severity = warning
+
+# privateフィールド命名: 先頭アンダースコア禁止（camelCase）
+dotnet_naming_rule.private_fields_camel_case.severity = warning
+dotnet_naming_rule.private_fields_camel_case.symbols = private_fields
+dotnet_naming_rule.private_fields_camel_case.style = camel_case_no_prefix
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.camel_case_no_prefix.capitalization = camel_case
+dotnet_naming_style.camel_case_no_prefix.required_prefix =
+
+# private const は PascalCase を維持
+dotnet_naming_rule.private_const_fields_pascal_case.severity = warning
+dotnet_naming_rule.private_const_fields_pascal_case.symbols = private_const_fields
+dotnet_naming_rule.private_const_fields_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.private_const_fields.applicable_kinds = field
+dotnet_naming_symbols.private_const_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_const_fields.required_modifiers = const
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+dotnet_naming_style.interface_prefix_i_style.capitalization = pascal_case
+dotnet_naming_style.interface_prefix_i_style.required_prefix = I
+dotnet_naming_style.pascal_case_with_async_suffix_style.capitalization = pascal_case
+dotnet_naming_style.pascal_case_with_async_suffix_style.required_suffix = Async
+
+# public/protected/internal フィールドは PascalCase
+dotnet_naming_rule.non_private_fields_pascal_case.severity = warning
+dotnet_naming_rule.non_private_fields_pascal_case.symbols = non_private_fields
+dotnet_naming_rule.non_private_fields_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.non_private_fields.applicable_kinds = field
+dotnet_naming_symbols.non_private_fields.applicable_accessibilities = public,protected,internal,protected_internal,private_protected
+
+# プロパティ/メソッド/イベントは PascalCase
+dotnet_naming_rule.members_pascal_case.severity = warning
+dotnet_naming_rule.members_pascal_case.symbols = members
+dotnet_naming_rule.members_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.members.applicable_kinds = property,method,event
+
+# async メソッドは Async サフィックス必須
+dotnet_naming_rule.async_methods_end_with_async.severity = warning
+dotnet_naming_rule.async_methods_end_with_async.symbols = async_methods
+dotnet_naming_rule.async_methods_end_with_async.style = pascal_case_with_async_suffix_style
+
+dotnet_naming_symbols.async_methods.applicable_kinds = method
+dotnet_naming_symbols.async_methods.required_modifiers = async
+
+# 型と名前空間は PascalCase
+dotnet_naming_rule.types_and_namespaces_pascal_case.severity = warning
+dotnet_naming_rule.types_and_namespaces_pascal_case.symbols = types_and_namespaces
+dotnet_naming_rule.types_and_namespaces_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.types_and_namespaces.applicable_kinds = class,struct,enum,delegate,namespace
+
+# インターフェースは I + PascalCase
+dotnet_naming_rule.interfaces_prefix_i_pascal_case.severity = warning
+dotnet_naming_rule.interfaces_prefix_i_pascal_case.symbols = interfaces
+dotnet_naming_rule.interfaces_prefix_i_pascal_case.style = interface_prefix_i_style
+
+dotnet_naming_symbols.interfaces.applicable_kinds = interface

@@ -1,0 +1,15 @@
+﻿{
+    "name": "MyProject.Tests.PlayMode",
+    "references": [
+        "GUID:1aab7825ac3d34b4a8330f6ac61fa1d9",
+        "GUID:4f67eba4013277e449159afb92a0bf73",
+        "GUID:1dc9adabc2ecf6d43a6c57353032333c",
+        "GUID:27d185cb58ceaf549a2eac02e2ea1157",
+        "GUID:1a0f04e8b1366444eba59eac5ab5ea42",
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

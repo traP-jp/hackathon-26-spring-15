@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "SelectActions",
+    "maps": [
+        {
+            "name": "Main",
+            "id": "e6bd01fb-e252-4777-81d9-013b9b10f319",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "126aa79d-0f91-4f68-84fc-c9a602bb0049",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "81fccdca-caf7-4166-a7a9-aed01554eb54",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

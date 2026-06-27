@@ -1,0 +1,4 @@
+interface:
+  display_name: "Infrastructure Layer"
+  short_description: "Implement adapters for save, load, and external services"
+  default_prompt: "Use $layer-infrastructure to implement Model Port adapters for persistence and external APIs."

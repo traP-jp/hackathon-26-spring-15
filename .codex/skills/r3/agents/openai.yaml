@@ -1,0 +1,4 @@
+interface:
+  display_name: "R3 Reactive"
+  short_description: "Implement reactive state and event flows with R3 in Unity"
+  default_prompt: "Use $r3 to implement Unity reactive state and event flows with R3, including subscription lifetime management."

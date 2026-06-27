@@ -1,0 +1,4 @@
+interface:
+  display_name: "View Layer"
+  short_description: "Implement MonoBehaviour Views, Factory, and Components"
+  default_prompt: "Use $layer-view to implement View, Factory, and Component scripts for scene objects."

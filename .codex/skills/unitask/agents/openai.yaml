@@ -1,0 +1,5 @@
+interface:
+  display_name: "UniTask Async"
+  short_description: "Implement async flows with cancellation and safe fire-and-forget"
+  default_prompt: "Use $unitask to implement Unity async flows with UniTask, cancellation propagation, and safe fire-and-forget."
+

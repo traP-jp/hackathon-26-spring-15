@@ -1,0 +1,4 @@
+interface:
+  display_name: "Director Layer"
+  short_description: "Implement scene orchestration between View and Model"
+  default_prompt: "Use $layer-director to implement scene orchestration and event wiring without domain logic."
