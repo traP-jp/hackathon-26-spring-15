@@ -6,6 +6,9 @@ public class PlayerView : MonoBehaviour
     [SerializeField] private float _moveSpeed = 3f;
     [SerializeField] private float _boostSpeed = 6f;
     [SerializeField] private float _jumpPower = 8f;
+    [SerializeField] private int _maxHp = 100;
+
+    public int _hp {get; private set;}
 
     private Rigidbody2D _rb;
     private bool _isBoost;
@@ -14,6 +17,7 @@ public class PlayerView : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _hp = _maxHp;
     }
 
     // Update is called once per frame
@@ -46,5 +50,12 @@ public class PlayerView : MonoBehaviour
         if(!isGround) return;
 
         _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
+    }
+
+    public void Damage(int damage)
+    {
+        _hp -= damage;
+
+        _hp = Mathf.Clamp(_hp, 0, _maxHp);
     }
 }
