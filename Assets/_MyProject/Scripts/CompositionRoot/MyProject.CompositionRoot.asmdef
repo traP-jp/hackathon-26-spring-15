@@ -1,0 +1,21 @@
+{
+    "name": "MyProject.CompositionRoot",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1dc9adabc2ecf6d43a6c57353032333c",
+        "GUID:1aab7825ac3d34b4a8330f6ac61fa1d9",
+        "GUID:27d185cb58ceaf549a2eac02e2ea1157",
+        "GUID:1a0f04e8b1366444eba59eac5ab5ea42",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:ace1a962d6cb545a78234415708dae81"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

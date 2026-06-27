@@ -1,0 +1,4 @@
+interface:
+  display_name: "VContainer DI"
+  short_description: "Implement Unity DI registration and scope flows with VContainer"
+  default_prompt: "Use $vcontainer to implement Unity DI registration, composition roots, and scope lifecycles with VContainer."

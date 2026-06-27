@@ -1,0 +1,4 @@
+interface:
+  display_name: "Model Layer"
+  short_description: "Implement Pure C# domain logic and Port interfaces"
+  default_prompt: "Use $layer-model to implement Pure C# domain logic and Port interfaces in Kageki Architecture."

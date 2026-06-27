@@ -1,0 +1,4 @@
+interface:
+  display_name: "Composition Root Layer"
+  short_description: "Implement DI registrations and EntryPoint bootstrapping"
+  default_prompt: "Use $layer-composition-root to register dependencies and bootstrap EntryPoint lifecycle."
