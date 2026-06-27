@@ -1,88 +1,115 @@
+using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(BoxCollider2D))]
-public class PlayerView : MonoBehaviour
+namespace MyProject.View
 {
-    [SerializeField] private float _moveSpeed = 3f;
-    [SerializeField] private float _boostSpeed = 6f;
-    [SerializeField] private float _jumpPower = 8f;
-    [SerializeField] private int _maxHp = 100;
-    [SerializeField] private float _invincibleTime = 1.5f;
-
-    public int _hp {get; private set;}
-
-    private Rigidbody2D _rb;
-    private bool _isBoost;
-    private bool _isInvincible;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(BoxCollider2D))]
+    public class PlayerView : ViewBase
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _hp = _maxHp;
-    }
+        [SerializeField] private float _moveSpeed = 3f;
+        [SerializeField] private float _boostSpeed = 6f;
+        [SerializeField] private float _jumpHeight = 2f;
+        [SerializeField] private int _maxHp = 100;
+        [SerializeField] private float _invincibleTime = 1.5f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        float xVelocity = _moveSpeed;
+        public int _hp {get; private set;}
 
-        if(_isBoost)
+        private Rigidbody2D _rb;
+        private bool _isBoost;
+        private bool _isInvincible;
+
+        public override void Initialize()
         {
-            xVelocity = _boostSpeed;
+            _rb = GetComponent<Rigidbody2D>();
+            _hp = _maxHp;
+            gameObject.SetActive(false);
         }
 
-        _rb.linearVelocity = new Vector2(xVelocity, _rb.linearVelocity.y);
-    }
+        public override void Show()
+        {
+            gameObject.SetActive(true);
+        }
 
-    // 加速
-    public void OnBoost(InputAction.CallbackContext context)
-    {
-        _isBoost = context.ReadValueAsButton();
-    }
+        public override void Hide()
+        {
+            gameObject.SetActive(false);
+        }
 
-    // ジャンプ
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if(!context.performed) return;
+        public override UniTask ShowAsync(CancellationToken ct)
+        {
+            Show();
+            return UniTask.CompletedTask;
+        }
 
-        bool isGround = Physics2D.Raycast(
-            (Vector2)transform.position + Vector2.down * 0.51f,
-            Vector2.down,
-            0.05f);
+        public override UniTask HideAsync(CancellationToken ct)
+        {
+            Hide();
+            return UniTask.CompletedTask;
+        }
 
-        if(!isGround) return;
+        void Update()
+        {
+            float xVelocity = _moveSpeed;
 
-        _rb.AddForce(Vector2.up * _jumpPower, ForceMode2D.Impulse);
-    }
+            if(_isBoost)
+            {
+                xVelocity = _boostSpeed;
+            }
 
-    // ダメージ管理
-    public void Damage(int damage, GimmickType type)
-    {
-        if (_isInvincible) return;
+            _rb.linearVelocity = new Vector2(xVelocity, _rb.linearVelocity.y);
+        }
 
-        // ダッシュしていない時に当たる
-        if(type == GimmickType.OnlyWhenNotDashing && _isBoost) return;
+        // 加速
+        public void OnBoost(InputAction.CallbackContext context)
+        {
+            _isBoost = context.ReadValueAsButton();
+        }
 
-        // ダッシュ中に当たる
-        if(type == GimmickType.OnlyWhenDashing && !_isBoost) return;
+        // ジャンプ
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            if(!context.performed) return;
 
-        _hp -= damage;
-        _hp = Mathf.Clamp(_hp, 0, _maxHp);
+            bool isGround = Physics2D.Raycast(
+                (Vector2)transform.position + Vector2.down * 0.51f,
+                Vector2.down,
+                0.05f);
 
-        StartCoroutine(InvincibleCoroutine());
-    }
+            if(!isGround) return;
 
-    // 無敵時間管理
-    private IEnumerator InvincibleCoroutine()
-    {
-        _isInvincible = true;
+            float jumpSpeed = Mathf.Sqrt(2f * Mathf.Abs(Physics2D.gravity.y * _rb.gravityScale) * _jumpHeight);
+            _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, jumpSpeed);
+        }
 
-        yield return new WaitForSeconds(_invincibleTime);
+        // ダメージ管理
+        public void Damage(int damage, GimmickType type)
+        {
+            if (_isInvincible) return;
 
-        _isInvincible = false;
+            // ダッシュしていない時に当たる
+            if(type == GimmickType.OnlyWhenNotDashing && _isBoost) return;
+
+            // ダッシュ中に当たる
+            if(type == GimmickType.OnlyWhenDashing && !_isBoost) return;
+
+            _hp -= damage;
+            _hp = Mathf.Clamp(_hp, 0, _maxHp);
+
+            StartCoroutine(InvincibleCoroutine());
+        }
+
+        // 無敵時間管理
+        private IEnumerator InvincibleCoroutine()
+        {
+            _isInvincible = true;
+
+            yield return new WaitForSeconds(_invincibleTime);
+
+            _isInvincible = false;
+        }
     }
 }

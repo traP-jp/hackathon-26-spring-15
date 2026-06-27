@@ -1,36 +1,64 @@
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class GimmickSpawner : MonoBehaviour
+namespace MyProject.View
 {
-    [SerializeField] private Transform player_transform;
-    [SerializeField] private GameObject wall_prefab;
-    private int wall_number_count = 0;
-    [SerializeField] private int wall_distant = 5;
-    private List<GameObject> walls;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class GimmickSpawner : ViewBase
     {
-        walls = new List<GameObject>();
-    }
+        [SerializeField] private Transform player_transform;
+        [SerializeField] private GimmickView wall_prefab;
+        private int wall_number_count = 0;
+        [SerializeField] private int wall_distant = 5;
+        private List<GimmickView> walls;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (player_transform.position.x >= wall_number_count * wall_distant)
+        public override void Initialize()
         {
-            Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
-            GameObject newwall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity, transform);
-            walls.Add(newwall);
+            walls = new List<GimmickView>();
+            gameObject.SetActive(false);
+        }
 
-            if (walls.Count >= 10)
+        public override void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public override void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public override UniTask ShowAsync(CancellationToken ct)
+        {
+            Show();
+            return UniTask.CompletedTask;
+        }
+
+        public override UniTask HideAsync(CancellationToken ct)
+        {
+            Hide();
+            return UniTask.CompletedTask;
+        }
+
+        void Update()
+        {
+            if (player_transform.position.x >= wall_number_count * wall_distant)
             {
-                Destroy(walls[0]);
-                walls.RemoveAt(0);
-            }
+                Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
+                GimmickView newWall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity, transform);
+                newWall.Initialize();
+                newWall.Show();
+                walls.Add(newWall);
 
-            wall_number_count += 1;
+                if (walls.Count >= 10)
+                {
+                    Destroy(walls[0].gameObject);
+                    walls.RemoveAt(0);
+                }
+
+                wall_number_count += 1;
+            }
         }
     }
 }
-

@@ -1757,6 +1757,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: MyProject.View::MyProject.View.RootViewHub
   audioSlider: {fileID: 2027696808}
   audioButton: {fileID: 1669529497}
+  views:
+  - {fileID: 2027696808}
+  - {fileID: 1669529497}
+  - {fileID: 1532929579}
+  - {fileID: 1238588154}
+  - {fileID: 1664012599}
+  - {fileID: 1574526375}
 --- !u!1 &1371877424
 GameObject:
   m_ObjectHideFlags: 0
@@ -1982,7 +1989,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: MyProject.View::PlayerView
   _moveSpeed: 3
   _boostSpeed: 6
-  _jumpPower: 25
+  _jumpHeight: 5
   _maxHp: 100
   _invincibleTime: 1.5
 --- !u!61 &1532929580
@@ -2165,7 +2172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::GimmickSpawner
   player_transform: {fileID: 1532929578}
-  wall_prefab: {fileID: 6558111246081628890, guid: 364596eb465827d43b3c88aaca3f3a68, type: 3}
+  wall_prefab: {fileID: 7644017795123417090, guid: 364596eb465827d43b3c88aaca3f3a68, type: 3}
   wall_distant: 5
 --- !u!1 &1600499822
 GameObject:
