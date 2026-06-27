@@ -1,6 +1,7 @@
-using System.Collections;
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using LitMotion;
 using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,17 +19,25 @@ namespace MyProject.View
         [SerializeField] private float _boostSpeed = 6f;
         [SerializeField] private float _jumpHeight = 2f;
         [SerializeField] private int _maxHp = 100;
-        [SerializeField] private float _invincibleTime = 1.5f;
+        [SerializeField, Min(0.01f)] private float _invincibleTime = 1.5f;
+        [SerializeField, Min(0.01f)] private float _damageFlashDuration = 0.12f;
+        [SerializeField, Range(0f, 1f)] private float _invincibleDarkAmount = 0.45f;
+        [SerializeField, Min(0.01f)] private float _invincibleBlinkInterval = 0.08f;
 
         public int _hp {get; private set;}
 
         private Rigidbody2D _rb;
+        private SpriteRenderer[] _spriteRenderers = Array.Empty<SpriteRenderer>();
+        private Color[] _baseSpriteColors = Array.Empty<Color>();
+        private CancellationTokenSource _invincibleCts;
+        private MotionHandle _invincibleVisualHandle;
         private bool _isBoost;
         private bool _isInvincible;
 
         public override void Initialize()
         {
             _rb = GetComponent<Rigidbody2D>();
+            CacheSpriteColors();
             _hp = _maxHp;
             gameObject.SetActive(false);
         }
@@ -40,6 +49,7 @@ namespace MyProject.View
 
         public override void Hide()
         {
+            CancelInvincible();
             gameObject.SetActive(false);
         }
 
@@ -104,21 +114,101 @@ namespace MyProject.View
             _hp = Mathf.Clamp(_hp, 0, _maxHp);
 
             damaged.OnNext(Unit.Default);
-            StartCoroutine(InvincibleCoroutine());
+            StartInvincible();
         }
 
         // 無敵時間管理
-        private IEnumerator InvincibleCoroutine()
+        private void StartInvincible()
+        {
+            CancelInvincible();
+
+            _invincibleCts = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy());
+            InvincibleAsync(_invincibleCts).Forget();
+        }
+
+        private async UniTaskVoid InvincibleAsync(CancellationTokenSource cts)
         {
             _isInvincible = true;
 
-            yield return new WaitForSeconds(_invincibleTime);
+            try
+            {
+                PlayInvincibleVisual();
+                await UniTask.Delay(TimeSpan.FromSeconds(_invincibleTime), cancellationToken: cts.Token);
+            }
+            catch (OperationCanceledException) when (cts.IsCancellationRequested)
+            {
+            }
+            finally
+            {
+                if (_invincibleCts == cts)
+                {
+                    _invincibleCts = null;
+                    _isInvincible = false;
+                    _invincibleVisualHandle.TryCancel();
+                    ResetSpriteColors();
+                }
+
+                cts.Dispose();
+            }
+        }
+
+        private void PlayInvincibleVisual()
+        {
+            _invincibleVisualHandle.TryCancel();
+
+            _invincibleVisualHandle = LMotion.Create(0f, _invincibleTime, _invincibleTime)
+                .WithEase(Ease.Linear)
+                .Bind(ApplyInvincibleVisual)
+                .AddTo(this);
+        }
+
+        private void ApplyInvincibleVisual(float elapsed)
+        {
+            var flashRate = Mathf.Clamp01(1f - elapsed / _damageFlashDuration);
+            var blinkRate = Mathf.PingPong(elapsed / _invincibleBlinkInterval, 1f);
+            var darkRate = Mathf.Max(flashRate, blinkRate) * _invincibleDarkAmount;
+
+            for (var i = 0; i < _spriteRenderers.Length; i++)
+            {
+                var baseColor = _baseSpriteColors[i];
+                var color = Color.Lerp(baseColor, Color.black, darkRate);
+                color.a = baseColor.a;
+                _spriteRenderers[i].color = color;
+            }
+        }
+
+        private void CancelInvincible()
+        {
+            _invincibleCts?.Cancel();
+            _invincibleCts = null;
 
             _isInvincible = false;
+            _invincibleVisualHandle.TryCancel();
+            ResetSpriteColors();
+        }
+
+        private void CacheSpriteColors()
+        {
+            _spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+            _baseSpriteColors = new Color[_spriteRenderers.Length];
+
+            for (var i = 0; i < _spriteRenderers.Length; i++)
+            {
+                _baseSpriteColors[i] = _spriteRenderers[i].color;
+            }
+        }
+
+        private void ResetSpriteColors()
+        {
+            for (var i = 0; i < _spriteRenderers.Length; i++)
+            {
+                _spriteRenderers[i].color = _baseSpriteColors[i];
+            }
         }
 
         void OnDestroy()
         {
+            CancelInvincible();
             damaged.OnCompleted();
             damaged.Dispose();
         }
