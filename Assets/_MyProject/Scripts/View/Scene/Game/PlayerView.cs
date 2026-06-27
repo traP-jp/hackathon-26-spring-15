@@ -39,6 +39,7 @@ namespace MyProject.View
         public override void Initialize()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
             _playerInput = GetComponent<PlayerInput>();
             CacheSpriteColors();
             _hp = _maxHp;
@@ -85,7 +86,7 @@ namespace MyProject.View
             _playerInput.enabled = false;
         }
 
-        void Update()
+        void FixedUpdate()
         {
             float xVelocity = _moveSpeed;
 

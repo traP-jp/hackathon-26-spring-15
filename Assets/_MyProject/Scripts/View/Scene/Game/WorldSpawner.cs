@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace MyProject.View
 {
+    [DefaultExecutionOrder(100)]
     public class WorldSpawner : ViewBase
     {
         [SerializeField]
@@ -100,7 +101,7 @@ namespace MyProject.View
                 }
             }
 
-            public void Update()
+            public void Refresh()
             {
                 Vector3 cameraPosition = GetCameraPosition();
                 int cameraIndex = GetIndex(cameraPosition.x * (1f - factor));
@@ -215,18 +216,24 @@ namespace MyProject.View
             return UniTask.CompletedTask;
         }
 
-        void Update()
+        void LateUpdate()
         {
-            nearParallaxBackground.Update();
-            middleParallaxBackground.Update();
-            farParallaxBackground.Update();
+            RefreshFloorCollider();
+            RefreshBackgrounds();
         }
 
-        void LateUpdate()
+        void RefreshFloorCollider()
         {
             var position = floorCollider.position;
             position.x = player.position.x;
             floorCollider.position = position;
+        }
+
+        void RefreshBackgrounds()
+        {
+            nearParallaxBackground.Refresh();
+            middleParallaxBackground.Refresh();
+            farParallaxBackground.Refresh();
         }
 
         void HideSampleGameObjects()

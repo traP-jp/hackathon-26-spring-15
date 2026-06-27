@@ -6,6 +6,7 @@ using Unity.Cinemachine;
 
 namespace MyProject.View
 {
+    [DefaultExecutionOrder(-100)]
     [RequireComponent(typeof(CinemachineImpulseSource))]
     public class CameraFollowView : ViewBase
     {
