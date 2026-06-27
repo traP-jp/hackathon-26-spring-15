@@ -10,6 +10,8 @@ namespace MyProject.View
     {
         public Observable<Unit> Quit => gameActionsObserver.Quit;
 
+        [SerializeField] PlayerView player;
+
         GameActionsObserver gameActionsObserver;
         ViewAnimationTimeline animationTimeline;
 
@@ -19,6 +21,7 @@ namespace MyProject.View
             animationTimeline = GetComponent<ViewAnimationTimeline>();
 
             gameActionsObserver.Disable();
+            player.SetInputEnabled(false);
             animationTimeline.Initialize();
             gameObject.SetActive(false);
         }
@@ -28,10 +31,12 @@ namespace MyProject.View
             gameObject.SetActive(true);
             await animationTimeline.ShowAsync(ct);
             gameActionsObserver.Enable();
+            player.SetInputEnabled(true);
         }
 
         public override async UniTask HideAsync(CancellationToken ct)
         {
+            player.SetInputEnabled(false);
             gameActionsObserver.Disable();
             await animationTimeline.HideAsync(ct);
             gameObject.SetActive(false);

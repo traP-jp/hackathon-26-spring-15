@@ -10,6 +10,7 @@ namespace MyProject.View
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(PlayerInput))]
     public class PlayerView : ViewBase
     {
         public Observable<Unit> Damaged => damaged;
@@ -27,6 +28,7 @@ namespace MyProject.View
         public int _hp {get; private set;}
 
         private Rigidbody2D _rb;
+        private PlayerInput _playerInput;
         private SpriteRenderer[] _spriteRenderers = Array.Empty<SpriteRenderer>();
         private Color[] _baseSpriteColors = Array.Empty<Color>();
         private CancellationTokenSource _invincibleCts;
@@ -37,8 +39,10 @@ namespace MyProject.View
         public override void Initialize()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _playerInput = GetComponent<PlayerInput>();
             CacheSpriteColors();
             _hp = _maxHp;
+            SetInputEnabled(false);
             gameObject.SetActive(false);
         }
 
@@ -63,6 +67,22 @@ namespace MyProject.View
         {
             Hide();
             return UniTask.CompletedTask;
+        }
+
+        public void SetInputEnabled(bool enabled)
+        {
+            _playerInput ??= GetComponent<PlayerInput>();
+
+            if (enabled)
+            {
+                _playerInput.enabled = true;
+                _playerInput.ActivateInput();
+                return;
+            }
+
+            _isBoost = false;
+            _playerInput.DeactivateInput();
+            _playerInput.enabled = false;
         }
 
         void Update()

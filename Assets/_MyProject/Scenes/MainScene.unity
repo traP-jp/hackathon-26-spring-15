@@ -1131,6 +1131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd91423626e678240bc141f41d5e1050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::MyProject.View.GameViewHub
+  player: {fileID: 1532929579}
 --- !u!114 &706006541
 MonoBehaviour:
   m_ObjectHideFlags: 0
