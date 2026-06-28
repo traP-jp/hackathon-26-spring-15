@@ -40,15 +40,18 @@ namespace MyProject.View
             return UniTask.CompletedTask;
         }
 
-        public bool TryClear(float playerPositionX)
+        public bool TryPass(float playerPositionX, out bool cleared)
         {
+            cleared = false;
+
             if (hasPassed || playerPositionX <= transform.position.x)
             {
                 return false;
             }
 
             hasPassed = true;
-            return !hasFailed;
+            cleared = !hasFailed;
+            return true;
         }
 
         private void OnTriggerEnter2D(Collider2D other)

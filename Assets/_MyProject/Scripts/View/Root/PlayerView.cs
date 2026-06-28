@@ -18,6 +18,7 @@ namespace MyProject.View
 
         [SerializeField] private float _moveSpeed = 3f;
         [SerializeField] private float _boostSpeed = 6f;
+        [SerializeField, Min(0f)] private float _speedMultiplierIncreasePerPhase = 0.1f;
         [SerializeField] private float _jumpHeight = 2f;
         [SerializeField] private Collider2D _floorCollider;
         [SerializeField, Min(0.01f)] private float _invincibleTime = 1.5f;
@@ -33,6 +34,7 @@ namespace MyProject.View
         private MotionHandle _invincibleVisualHandle;
         private bool _isBoost;
         private bool _isInvincible;
+        float speedMultiplier = 1f;
         Vector3 initialLocalPosition;
         Quaternion initialLocalRotation;
 
@@ -98,10 +100,17 @@ namespace MyProject.View
         {
             CancelInvincible();
             _isBoost = false;
+            speedMultiplier = 1f;
             transform.localPosition = initialLocalPosition;
             transform.localRotation = initialLocalRotation;
             _rb.linearVelocity = Vector2.zero;
             _rb.angularVelocity = 0f;
+        }
+
+        public void SetPhase(int phase)
+        {
+            var phaseIndex = Mathf.Max(1, phase) - 1;
+            speedMultiplier = 1f + _speedMultiplierIncreasePerPhase * phaseIndex;
         }
 
         void FixedUpdate()
@@ -113,6 +122,7 @@ namespace MyProject.View
                 xVelocity = _boostSpeed;
             }
 
+            xVelocity *= speedMultiplier;
             _rb.linearVelocity = new Vector2(xVelocity, _rb.linearVelocity.y);
         }
 

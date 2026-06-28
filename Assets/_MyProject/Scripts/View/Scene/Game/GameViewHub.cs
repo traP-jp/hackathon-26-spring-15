@@ -11,6 +11,7 @@ namespace MyProject.View
         public Observable<Unit> Quit => gameActionsObserver.Quit;
         public Observable<int> PlayerDamaged => player.Damaged;
         public Observable<Unit> GimmickCleared => gimmickSpawner.GimmickCleared;
+        public Observable<Unit> PhaseCompleted => gimmickSpawner.PhaseCompleted;
 
         [SerializeField] PlayerView player;
         [SerializeField] GimmickSpawner gimmickSpawner;
@@ -27,8 +28,6 @@ namespace MyProject.View
 
             gameActionsObserver.Disable();
             gimmickSpawner.ResetState();
-            healthView?.Initialize();
-            scoreView?.Initialize();
             animationTimeline.Initialize();
             gameObject.SetActive(false);
         }
@@ -79,6 +78,12 @@ namespace MyProject.View
         public void SetScore(int score)
         {
             scoreView?.SetScore(score);
+        }
+
+        public void SetPhase(int phase)
+        {
+            player.SetPhase(phase);
+            gimmickSpawner.BeginPhase();
         }
 
         void OnDestroy()

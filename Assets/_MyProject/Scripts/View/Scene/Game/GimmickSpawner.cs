@@ -9,14 +9,20 @@ namespace MyProject.View
     public class GimmickSpawner : ViewBase
     {
         public Observable<Unit> GimmickCleared => gimmickCleared;
+        public Observable<Unit> PhaseCompleted => phaseCompleted;
 
         [SerializeField] private Transform player_transform;
         [SerializeField] private GimmickView wall_prefab;
-        private int wall_number_count = 0;
-        [SerializeField] private int wall_distant = 5;
+        [SerializeField, Min(1)] private int gimmickCountPerPhase = 5;
+        [SerializeField, Min(1)] private int wall_distant = 5;
         readonly List<GimmickView> walls = new();
         readonly Subject<Unit> gimmickCleared = new();
+        readonly Subject<Unit> phaseCompleted = new();
+        int spawnedGimmickCount;
+        int passedGimmickCount;
+        float nextSpawnTriggerX;
         bool isSpawning;
+        bool isPhaseCompleted;
 
         public override void Initialize()
         {
@@ -34,6 +40,14 @@ namespace MyProject.View
             isSpawning = false;
         }
 
+        public void BeginPhase()
+        {
+            spawnedGimmickCount = 0;
+            passedGimmickCount = 0;
+            isPhaseCompleted = false;
+            nextSpawnTriggerX = player_transform.position.x;
+        }
+
         public override void Show()
         {
             ResetState();
@@ -49,7 +63,10 @@ namespace MyProject.View
         public void ResetState()
         {
             StopSpawn();
-            wall_number_count = 0;
+            spawnedGimmickCount = 0;
+            passedGimmickCount = 0;
+            nextSpawnTriggerX = 0f;
+            isPhaseCompleted = false;
 
             foreach (var wall in walls)
             {
@@ -80,34 +97,56 @@ namespace MyProject.View
 
             foreach (var wall in walls)
             {
-                if (wall.TryClear(player_transform.position.x))
+                if (wall.TryPass(player_transform.position.x, out var cleared))
                 {
-                    gimmickCleared.OnNext(Unit.Default);
+                    passedGimmickCount += 1;
+
+                    if (cleared)
+                    {
+                        gimmickCleared.OnNext(Unit.Default);
+                    }
                 }
             }
 
-            if (player_transform.position.x >= wall_number_count * wall_distant)
+            if (!isPhaseCompleted && spawnedGimmickCount >= gimmickCountPerPhase && passedGimmickCount >= gimmickCountPerPhase)
             {
-                Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
-                GimmickView newWall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity, transform);
-                newWall.Initialize();
-                newWall.Show();
-                walls.Add(newWall);
-
-                if (walls.Count >= 10)
-                {
-                    Destroy(walls[0].gameObject);
-                    walls.RemoveAt(0);
-                }
-
-                wall_number_count += 1;
+                isPhaseCompleted = true;
+                phaseCompleted.OnNext(Unit.Default);
+                return;
             }
+
+            if (spawnedGimmickCount >= gimmickCountPerPhase || player_transform.position.x < nextSpawnTriggerX)
+            {
+                return;
+            }
+
+            SpawnGimmick();
+        }
+
+        void SpawnGimmick()
+        {
+            Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
+            GimmickView newWall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity, transform);
+            newWall.Initialize();
+            newWall.Show();
+            walls.Add(newWall);
+
+            if (walls.Count > 10)
+            {
+                Destroy(walls[0].gameObject);
+                walls.RemoveAt(0);
+            }
+
+            spawnedGimmickCount += 1;
+            nextSpawnTriggerX += wall_distant;
         }
 
         void OnDestroy()
         {
             gimmickCleared.OnCompleted();
             gimmickCleared.Dispose();
+            phaseCompleted.OnCompleted();
+            phaseCompleted.Dispose();
         }
     }
 }

@@ -93,6 +93,10 @@ namespace MyProject.Director
                 .Subscribe(gameViewHub.SetScore)
                 .AddTo(disposables);
 
+            gameSessionModel.Phase
+                .Subscribe(gameViewHub.SetPhase)
+                .AddTo(disposables);
+
             gameSessionModel.Finished
                 .Take(1)
                 .Subscribe(_ => HandleGameFinishedAsync(cts.Token).Forget())
@@ -112,6 +116,10 @@ namespace MyProject.Director
 
             gameViewHub.GimmickCleared
                 .Subscribe(_ => gameSessionModel.AddScore(1))
+                .AddTo(disposables);
+
+            gameViewHub.PhaseCompleted
+                .Subscribe(_ => gameSessionModel.AdvancePhase())
                 .AddTo(disposables);
         }
 
