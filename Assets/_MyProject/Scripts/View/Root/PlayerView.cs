@@ -15,6 +15,8 @@ namespace MyProject.View
     {
         public Observable<int> Damaged => damaged;
         readonly Subject<int> damaged = new();
+        public Observable<bool> BoostingChanged => boostingChanged;
+        readonly Subject<bool> boostingChanged = new();
 
         [SerializeField] private float _moveSpeed = 3f;
         [SerializeField] private float _brakeSpeed = 1.5f;
@@ -34,6 +36,7 @@ namespace MyProject.View
         [SerializeField] AudioClip deathSeClip;
 
         private Rigidbody2D _rb;
+        BoxCollider2D playerCollider;
         private PlayerInput _playerInput;
         private SpriteRenderer[] _spriteRenderers = Array.Empty<SpriteRenderer>();
         private Color[] _baseSpriteColors = Array.Empty<Color>();
@@ -55,6 +58,7 @@ namespace MyProject.View
 
             _rb = GetComponent<Rigidbody2D>();
             _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+            playerCollider = GetComponent<BoxCollider2D>();
             _playerInput = GetComponent<PlayerInput>();
             initialLocalPosition = transform.localPosition;
             initialLocalRotation = transform.localRotation;
@@ -99,7 +103,7 @@ namespace MyProject.View
                 return;
             }
 
-            _isBoost = false;
+            SetBoosting(false);
             _isBrake = false;
             _playerInput.DeactivateInput();
             _playerInput.enabled = false;
@@ -108,7 +112,7 @@ namespace MyProject.View
         public void ResetState()
         {
             CancelInvincible();
-            _isBoost = false;
+            SetBoosting(false);
             _isBrake = false;
             speedMultiplier = 1f;
             transform.localPosition = initialLocalPosition;
@@ -149,7 +153,7 @@ namespace MyProject.View
                 PlaySe(boostSeClip);
             }
 
-            _isBoost = isBoost;
+            SetBoosting(isBoost);
         }
 
         // 減速
@@ -169,17 +173,21 @@ namespace MyProject.View
         {
             if(!context.performed) return;
 
-            var hits = Physics2D.RaycastAll(
-                (Vector2)transform.position + Vector2.down * 0.51f,
-                Vector2.down,
-                0.05f);
-            bool isGround = Array.Exists(hits, hit => hit.collider == _floorCollider);
-
-            if(!isGround) return;
+            if(!IsGrounded()) return;
 
             float jumpSpeed = Mathf.Sqrt(2f * Mathf.Abs(Physics2D.gravity.y * _rb.gravityScale) * _jumpHeight);
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, jumpSpeed);
             PlaySe(jumpSeClip);
+        }
+
+        bool IsGrounded()
+        {
+            const float groundCheckSkin = 0.02f;
+            const float groundCheckDistance = 0.08f;
+            var bounds = playerCollider.bounds;
+            var origin = new Vector2(bounds.center.x, bounds.min.y + groundCheckSkin);
+            var hits = Physics2D.RaycastAll(origin, Vector2.down, groundCheckSkin + groundCheckDistance);
+            return Array.Exists(hits, hit => hit.collider == _floorCollider);
         }
 
         // ダメージ管理
@@ -279,6 +287,17 @@ namespace MyProject.View
             ResetSpriteColors();
         }
 
+        void SetBoosting(bool isBoost)
+        {
+            if (_isBoost == isBoost)
+            {
+                return;
+            }
+
+            _isBoost = isBoost;
+            boostingChanged.OnNext(_isBoost);
+        }
+
         private void CacheSpriteColors()
         {
             _spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
@@ -313,6 +332,8 @@ namespace MyProject.View
             CancelInvincible();
             damaged.OnCompleted();
             damaged.Dispose();
+            boostingChanged.OnCompleted();
+            boostingChanged.Dispose();
         }
     }
 }

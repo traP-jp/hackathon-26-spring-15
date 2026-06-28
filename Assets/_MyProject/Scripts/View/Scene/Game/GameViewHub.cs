@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using R3;
@@ -13,7 +14,11 @@ namespace MyProject.View
             PlaySe(quitSeClip);
             return Unit.Default;
         });
-        public Observable<int> PlayerDamaged => player.Damaged;
+        public Observable<int> PlayerDamaged => player.Damaged.Select(damage =>
+        {
+            postProcessView?.PlayDamage();
+            return damage;
+        });
         public Observable<Unit> GimmickCleared => gimmickSpawner.GimmickCleared;
         public Observable<Unit> PhaseCompleted => gimmickSpawner.PhaseCompleted;
 
@@ -22,18 +27,25 @@ namespace MyProject.View
         [SerializeField] GimmickSpawner gimmickSpawner;
         [SerializeField] HealthView healthView;
         [SerializeField] ScoreView scoreView;
+        [SerializeField] GamePostProcessView postProcessView;
 
         GameActionsObserver gameActionsObserver;
         ViewAnimationTimeline animationTimeline;
+        readonly CompositeDisposable disposables = new();
 
         public override void Initialize()
         {
             gameActionsObserver ??= new GameActionsObserver();
             animationTimeline = GetComponent<ViewAnimationTimeline>();
 
+            disposables.Clear();
             gameActionsObserver.Disable();
             gimmickSpawner.ResetState();
             animationTimeline.Initialize();
+            postProcessView.Initialize();
+            player.BoostingChanged
+                .Subscribe(postProcessView.SetBoosting)
+                .AddTo(disposables);
             gameObject.SetActive(false);
         }
 
@@ -53,6 +65,7 @@ namespace MyProject.View
             player.SetInputEnabled(false);
             gimmickSpawner.StopSpawn();
             gameActionsObserver.Disable();
+            postProcessView?.ResetState();
             await UniTask.WhenAll(
                 healthView != null ? healthView.HideAsync(ct) : UniTask.CompletedTask,
                 scoreView != null ? scoreView.HideAsync(ct) : UniTask.CompletedTask,
@@ -79,6 +92,7 @@ namespace MyProject.View
         public void SetHealth(int health)
         {
             healthView?.SetHealth(health);
+            postProcessView?.SetHealth(health);
         }
 
         public void SetScore(int score)
@@ -93,7 +107,8 @@ namespace MyProject.View
 
         void OnDestroy()
         {
-            gameActionsObserver.Dispose();
+            disposables.Dispose();
+            gameActionsObserver?.Dispose();
         }
     }
 }
