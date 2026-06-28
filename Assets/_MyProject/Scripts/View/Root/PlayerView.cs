@@ -144,14 +144,20 @@ namespace MyProject.View
         {
             if (_isInvincible) return;
 
-            // ダッシュしていない時に当たる
-            if(type == GimmickType.OnlyWhenNotDashing && _isBoost) return;
-
-            // ダッシュ中に当たる
-            if(type == GimmickType.OnlyWhenDashing && !_isBoost) return;
+            if (!IsDamageCondition(type)) return;
 
             damaged.OnNext(damage);
             StartInvincible();
+        }
+
+        public bool IsDamageCondition(GimmickType type)
+        {
+            return type switch
+            {
+                GimmickType.OnlyWhenNotDashing => !_isBoost,
+                GimmickType.OnlyWhenDashing => _isBoost,
+                _ => true
+            };
         }
 
         // 無敵時間管理

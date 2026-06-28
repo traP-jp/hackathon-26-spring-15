@@ -10,6 +10,7 @@ namespace MyProject.View
     {
         public Observable<Unit> Quit => gameActionsObserver.Quit;
         public Observable<int> PlayerDamaged => player.Damaged;
+        public Observable<Unit> GimmickCleared => gimmickSpawner.GimmickCleared;
 
         [SerializeField] PlayerView player;
         [SerializeField] GimmickSpawner gimmickSpawner;

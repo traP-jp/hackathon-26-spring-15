@@ -1,17 +1,21 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using R3;
 using UnityEngine;
 
 namespace MyProject.View
 {
     public class GimmickSpawner : ViewBase
     {
+        public Observable<Unit> GimmickCleared => gimmickCleared;
+
         [SerializeField] private Transform player_transform;
         [SerializeField] private GimmickView wall_prefab;
         private int wall_number_count = 0;
         [SerializeField] private int wall_distant = 5;
         readonly List<GimmickView> walls = new();
+        readonly Subject<Unit> gimmickCleared = new();
         bool isSpawning;
 
         public override void Initialize()
@@ -74,6 +78,14 @@ namespace MyProject.View
                 return;
             }
 
+            foreach (var wall in walls)
+            {
+                if (wall.TryClear(player_transform.position.x))
+                {
+                    gimmickCleared.OnNext(Unit.Default);
+                }
+            }
+
             if (player_transform.position.x >= wall_number_count * wall_distant)
             {
                 Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
@@ -90,6 +102,12 @@ namespace MyProject.View
 
                 wall_number_count += 1;
             }
+        }
+
+        void OnDestroy()
+        {
+            gimmickCleared.OnCompleted();
+            gimmickCleared.Dispose();
         }
     }
 }

@@ -109,6 +109,10 @@ namespace MyProject.Director
             gameViewHub.PlayerDamaged
                 .Subscribe(gameSessionModel.TakeDamage)
                 .AddTo(disposables);
+
+            gameViewHub.GimmickCleared
+                .Subscribe(_ => gameSessionModel.AddScore(1))
+                .AddTo(disposables);
         }
 
         async UniTask StartGameAsync(CancellationToken ct)
