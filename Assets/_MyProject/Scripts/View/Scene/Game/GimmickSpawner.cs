@@ -24,6 +24,8 @@ namespace MyProject.View
         bool isSpawning;
         bool isPhaseCompleted;
 
+        float PlayerLocalPositionX => transform.InverseTransformPoint(player_transform.position).x;
+
         public override void Initialize()
         {
             ResetState();
@@ -45,7 +47,7 @@ namespace MyProject.View
             spawnedGimmickCount = 0;
             passedGimmickCount = 0;
             isPhaseCompleted = false;
-            nextSpawnTriggerX = player_transform.position.x;
+            nextSpawnTriggerX = PlayerLocalPositionX;
         }
 
         public override void Show()
@@ -97,7 +99,7 @@ namespace MyProject.View
 
             foreach (var wall in walls)
             {
-                if (wall.TryPass(player_transform.position.x, out var cleared))
+                if (wall.TryPass(PlayerLocalPositionX, out var cleared))
                 {
                     passedGimmickCount += 1;
 
@@ -115,7 +117,7 @@ namespace MyProject.View
                 return;
             }
 
-            if (spawnedGimmickCount >= gimmickCountPerPhase || player_transform.position.x < nextSpawnTriggerX)
+            if (spawnedGimmickCount >= gimmickCountPerPhase || PlayerLocalPositionX < nextSpawnTriggerX)
             {
                 return;
             }
@@ -125,8 +127,9 @@ namespace MyProject.View
 
         void SpawnGimmick()
         {
-            Vector3 spawnPosition = new Vector3(player_transform.position.x + 15, 0, 0);
-            GimmickView newWall = Instantiate(wall_prefab, spawnPosition, Quaternion.identity, transform);
+            Vector3 spawnPosition = new Vector3(PlayerLocalPositionX + 15, 0, 0);
+            GimmickView newWall = Instantiate(wall_prefab, transform);
+            newWall.transform.SetLocalPositionAndRotation(spawnPosition, Quaternion.identity);
             newWall.Initialize();
             newWall.Show();
             walls.Add(newWall);

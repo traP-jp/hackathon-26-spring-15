@@ -40,11 +40,11 @@ namespace MyProject.View
             return UniTask.CompletedTask;
         }
 
-        public bool TryPass(float playerPositionX, out bool cleared)
+        public bool TryPass(float playerLocalPositionX, out bool cleared)
         {
             cleared = false;
 
-            if (hasPassed || playerPositionX <= transform.position.x)
+            if (hasPassed || playerLocalPositionX <= transform.localPosition.x)
             {
                 return false;
             }
