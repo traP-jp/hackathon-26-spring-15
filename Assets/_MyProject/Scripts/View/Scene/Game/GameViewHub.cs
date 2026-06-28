@@ -8,11 +8,20 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class GameViewHub : SceneViewHubBase
     {
-        public Observable<Unit> Quit => gameActionsObserver.Quit;
+        public Observable<Unit> Quit => gameActionsObserver.Quit.Select(_ =>
+        {
+            PlaySe(quitSeClip);
+            return Unit.Default;
+        });
         public Observable<int> PlayerDamaged => player.Damaged;
+        public Observable<Unit> GimmickCleared => gimmickSpawner.GimmickCleared;
+        public Observable<Unit> PhaseCompleted => gimmickSpawner.PhaseCompleted;
 
+        [SerializeField] AudioClip quitSeClip;
         [SerializeField] PlayerView player;
         [SerializeField] GimmickSpawner gimmickSpawner;
+        [SerializeField] HealthView healthView;
+        [SerializeField] ScoreView scoreView;
 
         GameActionsObserver gameActionsObserver;
         ViewAnimationTimeline animationTimeline;
@@ -31,7 +40,11 @@ namespace MyProject.View
         public override async UniTask ShowAsync(CancellationToken ct)
         {
             gameObject.SetActive(true);
-            await animationTimeline.ShowAsync(ct);
+            await UniTask.WhenAll(
+                animationTimeline.ShowAsync(ct),
+                healthView != null ? healthView.ShowAsync(ct) : UniTask.CompletedTask,
+                scoreView != null ? scoreView.ShowAsync(ct) : UniTask.CompletedTask
+            );
             gameActionsObserver.Enable();
         }
 
@@ -40,7 +53,11 @@ namespace MyProject.View
             player.SetInputEnabled(false);
             gimmickSpawner.StopSpawn();
             gameActionsObserver.Disable();
-            await animationTimeline.HideAsync(ct);
+            await UniTask.WhenAll(
+                healthView != null ? healthView.HideAsync(ct) : UniTask.CompletedTask,
+                scoreView != null ? scoreView.HideAsync(ct) : UniTask.CompletedTask,
+                animationTimeline.HideAsync(ct)
+            );
             gameObject.SetActive(false);
         }
 
@@ -55,7 +72,23 @@ namespace MyProject.View
         {
             player.SetInputEnabled(false);
             gimmickSpawner.StopSpawn();
+            player.PlayDeathSe();
             await UniTask.CompletedTask;
+        }
+
+        public void SetHealth(int health)
+        {
+            healthView?.SetHealth(health);
+        }
+
+        public void SetScore(int score)
+        {
+            scoreView?.SetScore(score);
+        }
+
+        public void SetPhase(int phase)
+        {
+            player.SetPhase(phase);
         }
 
         void OnDestroy()

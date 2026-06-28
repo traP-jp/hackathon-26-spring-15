@@ -8,7 +8,13 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class TitleViewHub : SceneViewHubBase
     {
-        public Observable<Unit> StartGame => titleActionsObserver.StartGame;
+        public Observable<Unit> StartGame => titleActionsObserver.StartGame.Select(_ =>
+        {
+            PlaySe(gameStartSeClip);
+            return Unit.Default;
+        });
+
+        [SerializeField] AudioClip gameStartSeClip;
 
         TitleActionsObserver titleActionsObserver;
         ViewAnimationTimeline animationTimeline;

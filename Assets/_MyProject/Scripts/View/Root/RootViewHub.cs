@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
 
@@ -9,8 +7,11 @@ namespace MyProject.View
     {
         [SerializeField] StandardSliderView audioSlider;
         [SerializeField] AudioButtonView audioButton;
+        [SerializeField] AudioClip bgmClip;
 
         [SerializeField] ViewBase[] views;
+
+        bool hasStartedBgm;
 
         public void Initialize()
         {
@@ -23,6 +24,24 @@ namespace MyProject.View
             }
 
             BindAudioViews();
+            PlayBgmOnce();
+        }
+
+        void PlayBgmOnce()
+        {
+            if (hasStartedBgm || bgmClip == null)
+            {
+                return;
+            }
+
+            var audioPlayer = AudioPlayerView.Instance;
+            if (audioPlayer == null)
+            {
+                return;
+            }
+
+            audioPlayer.PlayBgm(bgmClip);
+            hasStartedBgm = true;
         }
 
         void BindAudioViews()

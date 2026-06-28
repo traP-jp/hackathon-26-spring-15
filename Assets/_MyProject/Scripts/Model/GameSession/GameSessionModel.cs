@@ -9,8 +9,10 @@ namespace MyProject.Model
     {
         public ReadOnlyReactiveProperty<int> Score => scoreModel.Value;
         public ReadOnlyReactiveProperty<int> Health => healthModel.Value;
+        public ReadOnlyReactiveProperty<int> Phase => phase;
         readonly ScoreModel scoreModel;
         readonly HealthModel healthModel;
+        readonly ReactiveProperty<int> phase = new(1);
 
         public Observable<Unit> Finished => finished;
         readonly Subject<Unit> finished = new();
@@ -34,6 +36,7 @@ namespace MyProject.Model
 
             scoreModel.Initialize();
             healthModel.Initialize();
+            phase.Value = 1;
 
             state = GameState.Ready;
         }
@@ -99,6 +102,16 @@ namespace MyProject.Model
             scoreModel.Add(amount);
         }
 
+        public void AdvancePhase()
+        {
+            if (state is not GameState.Playing)
+            {
+                throw new InvalidOperationException($"Cannot advance phase unless the game is playing. Current state: {state}");
+            }
+
+            phase.Value += 1;
+        }
+
         public void TakeDamage(int amount)
         {
             if (state is not GameState.Playing)
@@ -112,6 +125,7 @@ namespace MyProject.Model
         public void Dispose()
         {
             disposables.Dispose();
+            phase.Dispose();
             finished.OnCompleted();
             finished.Dispose();
         }

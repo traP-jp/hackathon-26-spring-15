@@ -17,13 +17,21 @@ namespace MyProject.View
         readonly Subject<int> damaged = new();
 
         [SerializeField] private float _moveSpeed = 3f;
+        [SerializeField] private float _brakeSpeed = 1.5f;
         [SerializeField] private float _boostSpeed = 6f;
+        [SerializeField, Min(0f)] private float _speedMultiplierIncreasePerPhase = 0.1f;
         [SerializeField] private float _jumpHeight = 2f;
         [SerializeField] private Collider2D _floorCollider;
         [SerializeField, Min(0.01f)] private float _invincibleTime = 1.5f;
         [SerializeField, Min(0.01f)] private float _damageFlashDuration = 0.12f;
         [SerializeField, Range(0f, 1f)] private float _invincibleDarkAmount = 0.45f;
         [SerializeField, Min(0.01f)] private float _invincibleBlinkInterval = 0.08f;
+        [Header("Sound Effects")]
+        [SerializeField] AudioClip jumpSeClip;
+        [SerializeField] AudioClip boostSeClip;
+        [SerializeField] AudioClip brakeSeClip;
+        [SerializeField] AudioClip damageSeClip;
+        [SerializeField] AudioClip deathSeClip;
 
         private Rigidbody2D _rb;
         private PlayerInput _playerInput;
@@ -32,7 +40,9 @@ namespace MyProject.View
         private CancellationTokenSource _invincibleCts;
         private MotionHandle _invincibleVisualHandle;
         private bool _isBoost;
+        private bool _isBrake;
         private bool _isInvincible;
+        float speedMultiplier = 1f;
         Vector3 initialLocalPosition;
         Quaternion initialLocalRotation;
 
@@ -90,6 +100,7 @@ namespace MyProject.View
             }
 
             _isBoost = false;
+            _isBrake = false;
             _playerInput.DeactivateInput();
             _playerInput.enabled = false;
         }
@@ -98,28 +109,59 @@ namespace MyProject.View
         {
             CancelInvincible();
             _isBoost = false;
+            _isBrake = false;
+            speedMultiplier = 1f;
             transform.localPosition = initialLocalPosition;
             transform.localRotation = initialLocalRotation;
             _rb.linearVelocity = Vector2.zero;
             _rb.angularVelocity = 0f;
         }
 
+        public void SetPhase(int phase)
+        {
+            var phaseIndex = Mathf.Max(1, phase) - 1;
+            speedMultiplier = 1f + _speedMultiplierIncreasePerPhase * phaseIndex;
+        }
+
         void FixedUpdate()
         {
             float xVelocity = _moveSpeed;
 
-            if(_isBoost)
+            if (_isBrake)
+            {
+                xVelocity = _brakeSpeed;
+            }
+            else if (_isBoost)
             {
                 xVelocity = _boostSpeed;
             }
 
+            xVelocity *= speedMultiplier;
             _rb.linearVelocity = new Vector2(xVelocity, _rb.linearVelocity.y);
         }
 
         // 加速
         public void OnBoost(InputAction.CallbackContext context)
         {
-            _isBoost = context.ReadValueAsButton();
+            var isBoost = context.ReadValueAsButton();
+            if (isBoost && !_isBoost)
+            {
+                PlaySe(boostSeClip);
+            }
+
+            _isBoost = isBoost;
+        }
+
+        // 減速
+        public void OnBrake(InputAction.CallbackContext context)
+        {
+            var isBrake = context.ReadValueAsButton();
+            if (isBrake && !_isBrake)
+            {
+                PlaySe(brakeSeClip);
+            }
+
+            _isBrake = isBrake;
         }
 
         // ジャンプ
@@ -137,6 +179,7 @@ namespace MyProject.View
 
             float jumpSpeed = Mathf.Sqrt(2f * Mathf.Abs(Physics2D.gravity.y * _rb.gravityScale) * _jumpHeight);
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, jumpSpeed);
+            PlaySe(jumpSeClip);
         }
 
         // ダメージ管理
@@ -144,14 +187,26 @@ namespace MyProject.View
         {
             if (_isInvincible) return;
 
-            // ダッシュしていない時に当たる
-            if(type == GimmickType.OnlyWhenNotDashing && _isBoost) return;
-
-            // ダッシュ中に当たる
-            if(type == GimmickType.OnlyWhenDashing && !_isBoost) return;
+            if (!ShouldTakeDamage(type)) return;
 
             damaged.OnNext(damage);
+            PlaySe(damageSeClip);
             StartInvincible();
+        }
+
+        public void PlayDeathSe()
+        {
+            PlaySe(deathSeClip);
+        }
+
+        public bool ShouldTakeDamage(GimmickType type)
+        {
+            return type switch
+            {
+                GimmickType.NoHitWhileBoosting => !_isBoost,
+                GimmickType.NoHitWhileBraking => !_isBrake,
+                _ => true
+            };
         }
 
         // 無敵時間管理
@@ -241,6 +296,16 @@ namespace MyProject.View
             {
                 _spriteRenderers[i].color = _baseSpriteColors[i];
             }
+        }
+
+        void PlaySe(AudioClip clip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+
+            AudioPlayerView.Instance?.PlaySe(clip);
         }
 
         void OnDestroy()

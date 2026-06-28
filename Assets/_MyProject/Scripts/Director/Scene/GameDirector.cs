@@ -85,6 +85,18 @@ namespace MyProject.Director
 
         void SubscribeModel()
         {
+            gameSessionModel.Health
+                .Subscribe(gameViewHub.SetHealth)
+                .AddTo(disposables);
+
+            gameSessionModel.Score
+                .Subscribe(gameViewHub.SetScore)
+                .AddTo(disposables);
+
+            gameSessionModel.Phase
+                .Subscribe(gameViewHub.SetPhase)
+                .AddTo(disposables);
+
             gameSessionModel.Finished
                 .Take(1)
                 .Subscribe(_ => HandleGameFinishedAsync(cts.Token).Forget())
@@ -100,6 +112,14 @@ namespace MyProject.Director
 
             gameViewHub.PlayerDamaged
                 .Subscribe(gameSessionModel.TakeDamage)
+                .AddTo(disposables);
+
+            gameViewHub.GimmickCleared
+                .Subscribe(_ => gameSessionModel.AddScore(1))
+                .AddTo(disposables);
+
+            gameViewHub.PhaseCompleted
+                .Subscribe(_ => gameSessionModel.AdvancePhase())
                 .AddTo(disposables);
         }
 

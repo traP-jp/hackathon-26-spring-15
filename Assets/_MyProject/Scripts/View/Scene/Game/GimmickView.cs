@@ -8,9 +8,13 @@ namespace MyProject.View
     {
         [SerializeField] private GimmickType _type;
         [SerializeField] private int _damage = 10;
+        bool hasPassed;
+        bool hasFailed;
 
         public override void Initialize()
         {
+            hasPassed = false;
+            hasFailed = false;
             gameObject.SetActive(false);
         }
 
@@ -36,10 +40,29 @@ namespace MyProject.View
             return UniTask.CompletedTask;
         }
 
+        public bool TryPass(float playerLocalPositionX, out bool cleared)
+        {
+            cleared = false;
+
+            if (hasPassed || playerLocalPositionX <= transform.localPosition.x)
+            {
+                return false;
+            }
+
+            hasPassed = true;
+            cleared = !hasFailed;
+            return true;
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if(other.TryGetComponent<PlayerView>(out var player))
+            if (other.TryGetComponent<PlayerView>(out var player))
             {
+                if (player.ShouldTakeDamage(_type))
+                {
+                    hasFailed = true;
+                }
+
                 player.Damage(_damage, _type);
             }
         }
