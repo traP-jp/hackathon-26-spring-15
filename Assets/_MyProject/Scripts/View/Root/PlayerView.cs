@@ -17,6 +17,7 @@ namespace MyProject.View
         readonly Subject<int> damaged = new();
 
         [SerializeField] private float _moveSpeed = 3f;
+        [SerializeField] private float _brakeSpeed = 1.5f;
         [SerializeField] private float _boostSpeed = 6f;
         [SerializeField, Min(0f)] private float _speedMultiplierIncreasePerPhase = 0.1f;
         [SerializeField] private float _jumpHeight = 2f;
@@ -33,6 +34,7 @@ namespace MyProject.View
         private CancellationTokenSource _invincibleCts;
         private MotionHandle _invincibleVisualHandle;
         private bool _isBoost;
+        private bool _isBrake;
         private bool _isInvincible;
         float speedMultiplier = 1f;
         Vector3 initialLocalPosition;
@@ -92,6 +94,7 @@ namespace MyProject.View
             }
 
             _isBoost = false;
+            _isBrake = false;
             _playerInput.DeactivateInput();
             _playerInput.enabled = false;
         }
@@ -100,6 +103,7 @@ namespace MyProject.View
         {
             CancelInvincible();
             _isBoost = false;
+            _isBrake = false;
             speedMultiplier = 1f;
             transform.localPosition = initialLocalPosition;
             transform.localRotation = initialLocalRotation;
@@ -117,7 +121,11 @@ namespace MyProject.View
         {
             float xVelocity = _moveSpeed;
 
-            if(_isBoost)
+            if (_isBrake)
+            {
+                xVelocity = _brakeSpeed;
+            }
+            else if (_isBoost)
             {
                 xVelocity = _boostSpeed;
             }
@@ -130,6 +138,12 @@ namespace MyProject.View
         public void OnBoost(InputAction.CallbackContext context)
         {
             _isBoost = context.ReadValueAsButton();
+        }
+
+        // 減速
+        public void OnBrake(InputAction.CallbackContext context)
+        {
+            _isBrake = context.ReadValueAsButton();
         }
 
         // ジャンプ
@@ -154,18 +168,18 @@ namespace MyProject.View
         {
             if (_isInvincible) return;
 
-            if (!IsDamageCondition(type)) return;
+            if (!ShouldTakeDamage(type)) return;
 
             damaged.OnNext(damage);
             StartInvincible();
         }
 
-        public bool IsDamageCondition(GimmickType type)
+        public bool ShouldTakeDamage(GimmickType type)
         {
             return type switch
             {
-                GimmickType.OnlyWhenNotDashing => !_isBoost,
-                GimmickType.OnlyWhenDashing => _isBoost,
+                GimmickType.NoHitWhileBoosting => !_isBoost,
+                GimmickType.NoHitWhileBraking => !_isBrake,
                 _ => true
             };
         }

@@ -3496,6 +3496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::PlayerView
   _moveSpeed: 6
+  _brakeSpeed: 4
   _boostSpeed: 8
   _speedMultiplierIncreasePerPhase: 0.2
   _jumpHeight: 4
@@ -3634,6 +3635,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 2a0c5b6c-ba5c-41a1-8d6a-1df6067e25f1
     m_ActionName: 'Player/Boost[/Keyboard/rightArrow]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1532929579}
+        m_TargetAssemblyTypeName: PlayerView, MyProject.View
+        m_MethodName: OnBrake
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: fae7f843-2df7-4de2-b06a-3320bea10cc1
+    m_ActionName: 'Player/Brake[/Keyboard/leftArrow]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -3683,10 +3700,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41148879e201e5e48a0393a65eb0e095, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::GimmickSpawner
-  player_transform: {fileID: 1532929578}
-  wall_prefab: {fileID: 7644017795123417090, guid: 364596eb465827d43b3c88aaca3f3a68, type: 3}
+  playerTransform: {fileID: 1532929578}
+  wallPrefabs:
+  - {fileID: 7644017795123417090, guid: 364596eb465827d43b3c88aaca3f3a68, type: 3}
+  - {fileID: 2742059519562163414, guid: d524f48c7846f40f5a75a2e906aba5b2, type: 3}
+  - {fileID: 8378976232060799836, guid: ee90d3d2df41347cf831952c7aeae499, type: 3}
+  - {fileID: 6733628397053268548, guid: 6d848cf1ef3e045779033fef6630e830, type: 3}
+  - {fileID: 4607105222656097486, guid: d6a20869005454c11aefb62a67819dc3, type: 3}
   gimmickCountPerPhase: 10
-  wall_distant: 5
+  wallDistance: 5
 --- !u!1 &1600499822
 GameObject:
   m_ObjectHideFlags: 0

@@ -58,7 +58,7 @@ namespace MyProject.View
         {
             if (other.TryGetComponent<PlayerView>(out var player))
             {
-                if (player.IsDamageCondition(_type))
+                if (player.ShouldTakeDamage(_type))
                 {
                     hasFailed = true;
                 }

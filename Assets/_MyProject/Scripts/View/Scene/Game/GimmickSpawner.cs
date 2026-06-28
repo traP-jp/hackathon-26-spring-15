@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -11,10 +12,10 @@ namespace MyProject.View
         public Observable<Unit> GimmickCleared => gimmickCleared;
         public Observable<Unit> PhaseCompleted => phaseCompleted;
 
-        [SerializeField] private Transform player_transform;
-        [SerializeField] private GimmickView wall_prefab;
-        [SerializeField, Min(1)] private int gimmickCountPerPhase = 5;
-        [SerializeField, Min(1)] private int wall_distant = 5;
+        [SerializeField] Transform playerTransform;
+        [SerializeField] List<GimmickView> wallPrefabs = new();
+        [SerializeField, Min(1)] int gimmickCountPerPhase = 5;
+        [SerializeField, Min(1)] int wallDistance = 5;
         readonly List<GimmickView> walls = new();
         readonly Subject<Unit> gimmickCleared = new();
         readonly Subject<Unit> phaseCompleted = new();
@@ -24,10 +25,11 @@ namespace MyProject.View
         bool isSpawning;
         bool isPhaseCompleted;
 
-        float PlayerLocalPositionX => transform.InverseTransformPoint(player_transform.position).x;
+        float PlayerLocalPositionX => transform.InverseTransformPoint(playerTransform.position).x;
 
         public override void Initialize()
         {
+            ValidateWallPrefabs();
             ResetState();
             gameObject.SetActive(false);
         }
@@ -128,7 +130,7 @@ namespace MyProject.View
         void SpawnGimmick()
         {
             Vector3 spawnPosition = new Vector3(PlayerLocalPositionX + 15, 0, 0);
-            GimmickView newWall = Instantiate(wall_prefab, transform);
+            GimmickView newWall = Instantiate(GetRandomWallPrefab(), transform);
             newWall.transform.SetLocalPositionAndRotation(spawnPosition, Quaternion.identity);
             newWall.Initialize();
             newWall.Show();
@@ -141,7 +143,28 @@ namespace MyProject.View
             }
 
             spawnedGimmickCount += 1;
-            nextSpawnTriggerX += wall_distant;
+            nextSpawnTriggerX += wallDistance;
+        }
+
+        GimmickView GetRandomWallPrefab()
+        {
+            return wallPrefabs[UnityEngine.Random.Range(0, wallPrefabs.Count)];
+        }
+
+        void ValidateWallPrefabs()
+        {
+            if (wallPrefabs == null || wallPrefabs.Count == 0)
+            {
+                throw new InvalidOperationException("GimmickSpawner: WallPrefabs が設定されていません。");
+            }
+
+            foreach (var wallPrefab in wallPrefabs)
+            {
+                if (wallPrefab == null)
+                {
+                    throw new InvalidOperationException("GimmickSpawner: WallPrefabs に null が含まれています。");
+                }
+            }
         }
 
         void OnDestroy()
