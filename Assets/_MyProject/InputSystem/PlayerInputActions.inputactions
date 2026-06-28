@@ -40,7 +40,7 @@
                 {
                     "name": "",
                     "id": "37ee950c-8223-494a-ae7e-ba8572fc9cea",
-                    "path": "",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -61,8 +61,8 @@
                 },
                 {
                     "name": "",
-                    "id": "90e864df-1c08-48d7-9ca4-f6f678d21efb",
-                    "path": "",
+                    "id": "e4f80a2e-5594-45c4-9a72-24d91f789a16",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

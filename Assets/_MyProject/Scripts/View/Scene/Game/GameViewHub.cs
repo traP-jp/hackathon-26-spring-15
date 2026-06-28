@@ -13,6 +13,8 @@ namespace MyProject.View
 
         [SerializeField] PlayerView player;
         [SerializeField] GimmickSpawner gimmickSpawner;
+        [SerializeField] HealthView healthView;
+        [SerializeField] ScoreView scoreView;
 
         GameActionsObserver gameActionsObserver;
         ViewAnimationTimeline animationTimeline;
@@ -24,6 +26,8 @@ namespace MyProject.View
 
             gameActionsObserver.Disable();
             gimmickSpawner.ResetState();
+            healthView?.Initialize();
+            scoreView?.Initialize();
             animationTimeline.Initialize();
             gameObject.SetActive(false);
         }
@@ -31,7 +35,11 @@ namespace MyProject.View
         public override async UniTask ShowAsync(CancellationToken ct)
         {
             gameObject.SetActive(true);
-            await animationTimeline.ShowAsync(ct);
+            await UniTask.WhenAll(
+                animationTimeline.ShowAsync(ct),
+                healthView != null ? healthView.ShowAsync(ct) : UniTask.CompletedTask,
+                scoreView != null ? scoreView.ShowAsync(ct) : UniTask.CompletedTask
+            );
             gameActionsObserver.Enable();
         }
 
@@ -40,7 +48,11 @@ namespace MyProject.View
             player.SetInputEnabled(false);
             gimmickSpawner.StopSpawn();
             gameActionsObserver.Disable();
-            await animationTimeline.HideAsync(ct);
+            await UniTask.WhenAll(
+                healthView != null ? healthView.HideAsync(ct) : UniTask.CompletedTask,
+                scoreView != null ? scoreView.HideAsync(ct) : UniTask.CompletedTask,
+                animationTimeline.HideAsync(ct)
+            );
             gameObject.SetActive(false);
         }
 
@@ -56,6 +68,16 @@ namespace MyProject.View
             player.SetInputEnabled(false);
             gimmickSpawner.StopSpawn();
             await UniTask.CompletedTask;
+        }
+
+        public void SetHealth(int health)
+        {
+            healthView?.SetHealth(health);
+        }
+
+        public void SetScore(int score)
+        {
+            scoreView?.SetScore(score);
         }
 
         void OnDestroy()

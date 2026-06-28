@@ -85,6 +85,14 @@ namespace MyProject.Director
 
         void SubscribeModel()
         {
+            gameSessionModel.Health
+                .Subscribe(gameViewHub.SetHealth)
+                .AddTo(disposables);
+
+            gameSessionModel.Score
+                .Subscribe(gameViewHub.SetScore)
+                .AddTo(disposables);
+
             gameSessionModel.Finished
                 .Take(1)
                 .Subscribe(_ => HandleGameFinishedAsync(cts.Token).Forget())
