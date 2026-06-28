@@ -1549,7 +1549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &706006539
 Transform:
   m_ObjectHideFlags: 0
@@ -1851,7 +1851,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'HP: 10'
+  m_text: 'LIFE: 10'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 21a189847b3124279b3c924ac3092d0f, type: 2}
   m_sharedMaterial: {fileID: 7801498234682392528, guid: 21a189847b3124279b3c924ac3092d0f, type: 2}
@@ -3141,7 +3141,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1316483771
 Transform:
   m_ObjectHideFlags: 0
@@ -3740,7 +3740,7 @@ MonoBehaviour:
   spawnPreloadDistance: 15
   offscreenSpawnMargin: 1
   minGimmickDistance: 5
-  randomAdditionalDistance: 10
+  randomAdditionalDistance: 8
 --- !u!1 &1600499822
 GameObject:
   m_ObjectHideFlags: 0

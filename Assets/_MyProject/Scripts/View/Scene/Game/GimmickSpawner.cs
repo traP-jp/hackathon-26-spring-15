@@ -24,11 +24,9 @@ namespace MyProject.View
         readonly List<GimmickView> walls = new();
         readonly Subject<Unit> gimmickCleared = new();
         readonly Subject<Unit> phaseCompleted = new();
-        int spawnedGimmickCount;
-        int passedGimmickCount;
+        int passedGimmickCountInPhase;
         float nextSpawnPositionX;
         bool isSpawning;
-        bool isPhaseCompleted;
 
         float PlayerLocalPositionX => transform.InverseTransformPoint(playerTransform.position).x;
 
@@ -51,14 +49,6 @@ namespace MyProject.View
             isSpawning = false;
         }
 
-        public void BeginPhase()
-        {
-            spawnedGimmickCount = 0;
-            passedGimmickCount = 0;
-            isPhaseCompleted = false;
-            nextSpawnPositionX = GetScreenRightLocalX() + offscreenSpawnMargin + GetRandomGimmickDistance();
-        }
-
         public override void Show()
         {
             ResetState();
@@ -74,10 +64,8 @@ namespace MyProject.View
         public void ResetState()
         {
             StopSpawn();
-            spawnedGimmickCount = 0;
-            passedGimmickCount = 0;
-            nextSpawnPositionX = 0f;
-            isPhaseCompleted = false;
+            passedGimmickCountInPhase = 0;
+            ResetNextSpawnPosition();
 
             foreach (var wall in walls)
             {
@@ -110,31 +98,37 @@ namespace MyProject.View
             {
                 if (wall.TryPass(PlayerLocalPositionX, out var cleared))
                 {
-                    passedGimmickCount += 1;
+                    passedGimmickCountInPhase += 1;
 
                     if (cleared)
                     {
                         gimmickCleared.OnNext(Unit.Default);
                     }
-                }
-            }
 
-            if (!isPhaseCompleted && spawnedGimmickCount >= gimmickCountPerPhase && passedGimmickCount >= gimmickCountPerPhase)
-            {
-                isPhaseCompleted = true;
-                phaseCompleted.OnNext(Unit.Default);
-                return;
+                    if (passedGimmickCountInPhase >= gimmickCountPerPhase)
+                    {
+                        passedGimmickCountInPhase = 0;
+                        phaseCompleted.OnNext(Unit.Default);
+                    }
+                }
             }
 
             var screenRightLocalX = GetScreenRightLocalX();
 
-            if (spawnedGimmickCount >= gimmickCountPerPhase ||
-                screenRightLocalX + spawnPreloadDistance < nextSpawnPositionX)
+            if (screenRightLocalX + spawnPreloadDistance < nextSpawnPositionX)
             {
                 return;
             }
 
             SpawnGimmick(nextSpawnPositionX, screenRightLocalX);
+        }
+
+        void ResetNextSpawnPosition()
+        {
+            targetCamera ??= Camera.main;
+            nextSpawnPositionX = targetCamera != null
+                ? GetScreenRightLocalX() + offscreenSpawnMargin + GetRandomGimmickDistance()
+                : 0f;
         }
 
         void SpawnGimmick(float scheduledPositionX, float screenRightLocalX)
@@ -157,7 +151,6 @@ namespace MyProject.View
                 walls.RemoveAt(0);
             }
 
-            spawnedGimmickCount += 1;
             nextSpawnPositionX = spawnPositionX + GetRandomGimmickDistance();
         }
 

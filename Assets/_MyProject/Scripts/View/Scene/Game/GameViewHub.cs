@@ -89,7 +89,6 @@ namespace MyProject.View
         public void SetPhase(int phase)
         {
             player.SetPhase(phase);
-            gimmickSpawner.BeginPhase();
         }
 
         void OnDestroy()
