@@ -50,6 +50,9 @@ TagManager:
   - name: NearBackground
     uniqueID: 1785600907
     locked: 0
+  - name: Foreground
+    uniqueID: 182319389
+    locked: 0
   - name: Gimmick
     uniqueID: 14151771
     locked: 0
