@@ -23,15 +23,22 @@ namespace MyProject.View
         [SerializeField, Range(0f, 1f)] float lowHealthPulseIntensity = 0.08f;
         [SerializeField, Min(0f)] float lowHealthPulseSpeed = 4f;
         [SerializeField, Min(0.01f)] float lowHealthTransitionDuration = 0.25f;
+        [Header("Boost Post Process")]
+        [SerializeField, Range(0f, 1f)] float boostMotionBlurIntensity = 0.55f;
+        [SerializeField, Range(0f, 0.2f)] float boostMotionBlurClamp = 0.08f;
+        [SerializeField, Min(0.01f)] float boostMotionBlurTransitionDuration = 0.12f;
 
         Vignette vignette;
         ChromaticAberration chromaticAberration;
         LensDistortion lensDistortion;
+        MotionBlur motionBlur;
         MotionHandle damagePostProcessHandle;
         MotionHandle lowHealthPostProcessHandle;
+        MotionHandle boostMotionBlurHandle;
         int maxHealth;
         float damagePostProcessRate;
         float lowHealthPostProcessRate;
+        float boostMotionBlurRate;
 
         public override void Initialize()
         {
@@ -105,13 +112,35 @@ namespace MyProject.View
                 .AddTo(this);
         }
 
+        public void SetBoosting(bool isBoosting)
+        {
+            if (motionBlur == null)
+            {
+                return;
+            }
+
+            float targetRate = isBoosting ? 1f : 0f;
+
+            boostMotionBlurHandle.TryCancel();
+            boostMotionBlurHandle = LMotion.Create(boostMotionBlurRate, targetRate, boostMotionBlurTransitionDuration)
+                .WithEase(Ease.OutQuad)
+                .Bind(value =>
+                {
+                    boostMotionBlurRate = value;
+                    ApplyPostProcess();
+                })
+                .AddTo(this);
+        }
+
         public void ResetState()
         {
             maxHealth = 0;
             damagePostProcessHandle.TryCancel();
             lowHealthPostProcessHandle.TryCancel();
+            boostMotionBlurHandle.TryCancel();
             damagePostProcessRate = 0f;
             lowHealthPostProcessRate = 0f;
+            boostMotionBlurRate = 0f;
             ApplyPostProcess();
         }
 
@@ -134,6 +163,7 @@ namespace MyProject.View
             vignette = GetOrAddPostProcess<Vignette>(profile);
             chromaticAberration = GetOrAddPostProcess<ChromaticAberration>(profile);
             lensDistortion = GetOrAddPostProcess<LensDistortion>(profile);
+            motionBlur = GetOrAddPostProcess<MotionBlur>(profile);
 
             vignette.active = true;
             vignette.color.overrideState = true;
@@ -159,6 +189,15 @@ namespace MyProject.View
             lensDistortion.yMultiplier.value = 1f;
             lensDistortion.center.value = new Vector2(0.5f, 0.5f);
             lensDistortion.scale.value = 1f;
+
+            motionBlur.active = true;
+            motionBlur.mode.overrideState = true;
+            motionBlur.quality.overrideState = true;
+            motionBlur.intensity.overrideState = true;
+            motionBlur.clamp.overrideState = true;
+            motionBlur.mode.value = MotionBlurMode.CameraOnly;
+            motionBlur.quality.value = MotionBlurQuality.Low;
+            motionBlur.clamp.value = boostMotionBlurClamp;
         }
 
         static T GetOrAddPostProcess<T>(VolumeProfile profile) where T : VolumeComponent
@@ -168,7 +207,7 @@ namespace MyProject.View
 
         void ApplyPostProcess()
         {
-            if (vignette == null || chromaticAberration == null || lensDistortion == null)
+            if (vignette == null || chromaticAberration == null || lensDistortion == null || motionBlur == null)
             {
                 return;
             }
@@ -183,12 +222,15 @@ namespace MyProject.View
             vignette.intensity.value = Mathf.Clamp01(Mathf.Max(lowHealthIntensity, damageVignette));
             chromaticAberration.intensity.value = Mathf.Clamp01(damageChromaticAberrationIntensity * damagePostProcessRate);
             lensDistortion.intensity.value = Mathf.Clamp(damageLensDistortionIntensity * damagePostProcessRate, -1f, 1f);
+            motionBlur.intensity.value = Mathf.Clamp01(boostMotionBlurIntensity * boostMotionBlurRate);
+            motionBlur.clamp.value = boostMotionBlurClamp;
         }
 
         void OnDestroy()
         {
             damagePostProcessHandle.TryCancel();
             lowHealthPostProcessHandle.TryCancel();
+            boostMotionBlurHandle.TryCancel();
         }
     }
 }

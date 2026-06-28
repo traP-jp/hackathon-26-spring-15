@@ -15,6 +15,8 @@ namespace MyProject.View
     {
         public Observable<int> Damaged => damaged;
         readonly Subject<int> damaged = new();
+        public Observable<bool> BoostingChanged => boostingChanged;
+        readonly Subject<bool> boostingChanged = new();
 
         [SerializeField] private float _moveSpeed = 3f;
         [SerializeField] private float _brakeSpeed = 1.5f;
@@ -99,7 +101,7 @@ namespace MyProject.View
                 return;
             }
 
-            _isBoost = false;
+            SetBoosting(false);
             _isBrake = false;
             _playerInput.DeactivateInput();
             _playerInput.enabled = false;
@@ -108,7 +110,7 @@ namespace MyProject.View
         public void ResetState()
         {
             CancelInvincible();
-            _isBoost = false;
+            SetBoosting(false);
             _isBrake = false;
             speedMultiplier = 1f;
             transform.localPosition = initialLocalPosition;
@@ -149,7 +151,7 @@ namespace MyProject.View
                 PlaySe(boostSeClip);
             }
 
-            _isBoost = isBoost;
+            SetBoosting(isBoost);
         }
 
         // 減速
@@ -279,6 +281,17 @@ namespace MyProject.View
             ResetSpriteColors();
         }
 
+        void SetBoosting(bool isBoost)
+        {
+            if (_isBoost == isBoost)
+            {
+                return;
+            }
+
+            _isBoost = isBoost;
+            boostingChanged.OnNext(_isBoost);
+        }
+
         private void CacheSpriteColors()
         {
             _spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
@@ -313,6 +326,8 @@ namespace MyProject.View
             CancelInvincible();
             damaged.OnCompleted();
             damaged.Dispose();
+            boostingChanged.OnCompleted();
+            boostingChanged.Dispose();
         }
     }
 }

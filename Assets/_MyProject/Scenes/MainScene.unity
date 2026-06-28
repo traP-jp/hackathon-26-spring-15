@@ -324,6 +324,9 @@ MonoBehaviour:
   lowHealthPulseIntensity: 0.08
   lowHealthPulseSpeed: 4
   lowHealthTransitionDuration: 0.25
+  boostMotionBlurIntensity: 0.28
+  boostMotionBlurClamp: 0.04
+  boostMotionBlurTransitionDuration: 0.12
 --- !u!1 &204834856
 GameObject:
   m_ObjectHideFlags: 0

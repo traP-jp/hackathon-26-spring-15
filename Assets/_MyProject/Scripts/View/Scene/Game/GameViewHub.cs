@@ -31,16 +31,21 @@ namespace MyProject.View
 
         GameActionsObserver gameActionsObserver;
         ViewAnimationTimeline animationTimeline;
+        readonly CompositeDisposable disposables = new();
 
         public override void Initialize()
         {
             gameActionsObserver ??= new GameActionsObserver();
             animationTimeline = GetComponent<ViewAnimationTimeline>();
 
+            disposables.Clear();
             gameActionsObserver.Disable();
             gimmickSpawner.ResetState();
             animationTimeline.Initialize();
             postProcessView.Initialize();
+            player.BoostingChanged
+                .Subscribe(postProcessView.SetBoosting)
+                .AddTo(disposables);
             gameObject.SetActive(false);
         }
 
@@ -102,6 +107,7 @@ namespace MyProject.View
 
         void OnDestroy()
         {
+            disposables.Dispose();
             gameActionsObserver?.Dispose();
         }
     }
