@@ -26,6 +26,12 @@ namespace MyProject.View
         [SerializeField, Min(0.01f)] private float _damageFlashDuration = 0.12f;
         [SerializeField, Range(0f, 1f)] private float _invincibleDarkAmount = 0.45f;
         [SerializeField, Min(0.01f)] private float _invincibleBlinkInterval = 0.08f;
+        [Header("Sound Effects")]
+        [SerializeField] AudioClip jumpSeClip;
+        [SerializeField] AudioClip boostSeClip;
+        [SerializeField] AudioClip brakeSeClip;
+        [SerializeField] AudioClip damageSeClip;
+        [SerializeField] AudioClip deathSeClip;
 
         private Rigidbody2D _rb;
         private PlayerInput _playerInput;
@@ -137,13 +143,25 @@ namespace MyProject.View
         // 加速
         public void OnBoost(InputAction.CallbackContext context)
         {
-            _isBoost = context.ReadValueAsButton();
+            var isBoost = context.ReadValueAsButton();
+            if (isBoost && !_isBoost)
+            {
+                PlaySe(boostSeClip);
+            }
+
+            _isBoost = isBoost;
         }
 
         // 減速
         public void OnBrake(InputAction.CallbackContext context)
         {
-            _isBrake = context.ReadValueAsButton();
+            var isBrake = context.ReadValueAsButton();
+            if (isBrake && !_isBrake)
+            {
+                PlaySe(brakeSeClip);
+            }
+
+            _isBrake = isBrake;
         }
 
         // ジャンプ
@@ -161,6 +179,7 @@ namespace MyProject.View
 
             float jumpSpeed = Mathf.Sqrt(2f * Mathf.Abs(Physics2D.gravity.y * _rb.gravityScale) * _jumpHeight);
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, jumpSpeed);
+            PlaySe(jumpSeClip);
         }
 
         // ダメージ管理
@@ -171,7 +190,13 @@ namespace MyProject.View
             if (!ShouldTakeDamage(type)) return;
 
             damaged.OnNext(damage);
+            PlaySe(damageSeClip);
             StartInvincible();
+        }
+
+        public void PlayDeathSe()
+        {
+            PlaySe(deathSeClip);
         }
 
         public bool ShouldTakeDamage(GimmickType type)
@@ -271,6 +296,16 @@ namespace MyProject.View
             {
                 _spriteRenderers[i].color = _baseSpriteColors[i];
             }
+        }
+
+        void PlaySe(AudioClip clip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+
+            AudioPlayerView.Instance?.PlaySe(clip);
         }
 
         void OnDestroy()

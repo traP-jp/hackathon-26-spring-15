@@ -106,6 +106,11 @@ namespace MyProject.View
 
         bool CanPlayClip(AudioClip clip)
         {
+            if (clip == null)
+            {
+                return false;
+            }
+
             var now = Time.unscaledTime;
 
             if (clipToPlaybackTime.TryGetValue(clip, out var nextPlayableTime) && now < nextPlayableTime)

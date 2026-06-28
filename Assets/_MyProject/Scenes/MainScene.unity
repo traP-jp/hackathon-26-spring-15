@@ -3507,6 +3507,11 @@ MonoBehaviour:
   _damageFlashDuration: 0.15
   _invincibleDarkAmount: 0.45
   _invincibleBlinkInterval: 0.08
+  jumpSeClip: {fileID: 8300000, guid: 9dede19f4ff2a4c36a195e8361cb46ac, type: 3}
+  boostSeClip: {fileID: 8300000, guid: 16d06532e8f1541a7b70752a57156482, type: 3}
+  brakeSeClip: {fileID: 8300000, guid: 23daf355bf6d04098a08d8d5583e442f, type: 3}
+  damageSeClip: {fileID: 8300000, guid: ae596deb3b30b4005aac5f4afa31ac33, type: 3}
+  deathSeClip: {fileID: 8300000, guid: 537665aff59a14d22b262a0c75f37518, type: 3}
 --- !u!61 &1532929580
 BoxCollider2D:
   m_ObjectHideFlags: 0

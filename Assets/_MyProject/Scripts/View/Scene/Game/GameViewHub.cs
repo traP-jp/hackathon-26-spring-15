@@ -67,6 +67,7 @@ namespace MyProject.View
         {
             player.SetInputEnabled(false);
             gimmickSpawner.StopSpawn();
+            player.PlayDeathSe();
             await UniTask.CompletedTask;
         }
 
