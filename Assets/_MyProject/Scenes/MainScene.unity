@@ -1562,6 +1562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd91423626e678240bc141f41d5e1050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::MyProject.View.GameViewHub
+  quitSeClip: {fileID: 8300000, guid: 331ef2fad7ee24f41979789538d9de65, type: 3}
   player: {fileID: 1532929579}
   gimmickSpawner: {fileID: 1574526375}
   healthView: {fileID: 1788832351}
@@ -2376,6 +2377,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d27b4cd3ee44d3c9a4a24e80c1b7b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::MyProject.View.TitleViewHub
+  gameStartSeClip: {fileID: 8300000, guid: c4b046abbd56c42ff8c23dfbcd6a3388, type: 3}
 --- !u!114 &1007905487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3152,6 +3154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7565e8f123724f3ebb97b5b4daa8f832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::MyProject.View.ResultViewHub
+  gameStartSeClip: {fileID: 8300000, guid: c4b046abbd56c42ff8c23dfbcd6a3388, type: 3}
+  quitSeClip: {fileID: 8300000, guid: 331ef2fad7ee24f41979789538d9de65, type: 3}
   resultTextView: {fileID: 922782783}
 --- !u!114 &1316483773
 MonoBehaviour:

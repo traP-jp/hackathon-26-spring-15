@@ -8,9 +8,19 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class ResultViewHub : SceneViewHubBase
     {
-        public Observable<Unit> Retry => resultActionsObserver.Retry;
-        public Observable<Unit> Quit => resultActionsObserver.Quit;
+        public Observable<Unit> Retry => resultActionsObserver.Retry.Select(_ =>
+        {
+            PlaySe(gameStartSeClip);
+            return Unit.Default;
+        });
+        public Observable<Unit> Quit => resultActionsObserver.Quit.Select(_ =>
+        {
+            PlaySe(quitSeClip);
+            return Unit.Default;
+        });
 
+        [SerializeField] AudioClip gameStartSeClip;
+        [SerializeField] AudioClip quitSeClip;
         [SerializeField] ResultTextView resultTextView;
 
         ResultActionsObserver resultActionsObserver;

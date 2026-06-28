@@ -55,6 +55,11 @@ namespace MyProject.View
 
         public void PlayBgm(AudioClip clip, bool loop = true)
         {
+            if (bgmAudioSource.clip == clip && bgmAudioSource.isPlaying)
+            {
+                return;
+            }
+
             if (!CanPlayClip(clip))
             {
                 return;

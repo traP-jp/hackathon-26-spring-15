@@ -8,11 +8,17 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class GameViewHub : SceneViewHubBase
     {
-        public Observable<Unit> Quit => gameActionsObserver.Quit;
+        public Observable<Unit> Quit => gameActionsObserver.Quit.Select(_ =>
+        {
+            PlaySe(quitSeClip);
+            return Unit.Default;
+        });
         public Observable<int> PlayerDamaged => player.Damaged;
         public Observable<Unit> GimmickCleared => gimmickSpawner.GimmickCleared;
         public Observable<Unit> PhaseCompleted => gimmickSpawner.PhaseCompleted;
 
+        [SerializeField] AudioClip bgmClip;
+        [SerializeField] AudioClip quitSeClip;
         [SerializeField] PlayerView player;
         [SerializeField] GimmickSpawner gimmickSpawner;
         [SerializeField] HealthView healthView;
@@ -34,6 +40,7 @@ namespace MyProject.View
 
         public override async UniTask ShowAsync(CancellationToken ct)
         {
+            PlayBgm(bgmClip);
             gameObject.SetActive(true);
             await UniTask.WhenAll(
                 animationTimeline.ShowAsync(ct),

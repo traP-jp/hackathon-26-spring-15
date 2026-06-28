@@ -20,5 +20,30 @@ namespace MyProject.View
         /// 非表示処理
         /// </summary>
         public abstract UniTask HideAsync(CancellationToken ct);
+
+        protected void PlaySe(AudioClip clip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+
+            AudioPlayerView.Instance?.PlaySe(clip);
+        }
+
+        protected void PlayBgm(AudioClip clip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+
+            AudioPlayerView.Instance?.PlayBgm(clip);
+        }
+
+        protected void StopBgm()
+        {
+            AudioPlayerView.Instance?.StopBgm();
+        }
     }
 }

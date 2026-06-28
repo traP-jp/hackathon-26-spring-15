@@ -8,7 +8,13 @@ namespace MyProject.View
     [RequireComponent(typeof(ViewAnimationTimeline))]
     public class TitleViewHub : SceneViewHubBase
     {
-        public Observable<Unit> StartGame => titleActionsObserver.StartGame;
+        public Observable<Unit> StartGame => titleActionsObserver.StartGame.Select(_ =>
+        {
+            PlaySe(gameStartSeClip);
+            return Unit.Default;
+        });
+
+        [SerializeField] AudioClip gameStartSeClip;
 
         TitleActionsObserver titleActionsObserver;
         ViewAnimationTimeline animationTimeline;
@@ -25,6 +31,7 @@ namespace MyProject.View
 
         public override async UniTask ShowAsync(CancellationToken ct)
         {
+            StopBgm();
             gameObject.SetActive(true);
             await animationTimeline.ShowAsync(ct);
             titleActionsObserver.Enable();
