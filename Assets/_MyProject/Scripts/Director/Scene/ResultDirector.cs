@@ -16,12 +16,14 @@ namespace MyProject.Director
         readonly Subject<Unit> sceneReloadRequest = new();
 
         readonly ResultViewHub resultViewHub;
+        readonly GameSessionModel gameSessionModel;
 
         readonly CompositeDisposable disposables = new();
 
-        public ResultDirector(ResultViewHub resultViewHub)
+        public ResultDirector(ResultViewHub resultViewHub, GameSessionModel gameSessionModel)
         {
             this.resultViewHub = resultViewHub;
+            this.gameSessionModel = gameSessionModel;
         }
 
         public async UniTask InitializeAsync(CancellationToken ct)
@@ -33,6 +35,11 @@ namespace MyProject.Director
         public async UniTask BeforeEnterAsync(CancellationToken ct)
         {
             disposables.Clear();
+            gameSessionModel.Score
+                .Take(1)
+                .Subscribe(resultViewHub.SetScore)
+                .AddTo(disposables);
+
             await UniTask.CompletedTask;
         }
 

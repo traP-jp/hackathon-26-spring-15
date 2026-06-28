@@ -11,6 +11,8 @@ namespace MyProject.View
         public Observable<Unit> Retry => resultActionsObserver.Retry;
         public Observable<Unit> Quit => resultActionsObserver.Quit;
 
+        [SerializeField] ResultTextView resultTextView;
+
         ResultActionsObserver resultActionsObserver;
         ViewAnimationTimeline animationTimeline;
 
@@ -36,6 +38,11 @@ namespace MyProject.View
             resultActionsObserver.Disable();
             await animationTimeline.HideAsync(ct);
             gameObject.SetActive(false);
+        }
+
+        public void SetScore(int score)
+        {
+            resultTextView?.SetScore(score);
         }
 
         void OnDestroy()
