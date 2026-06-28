@@ -1224,7 +1224,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 6, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3499,7 +3499,7 @@ MonoBehaviour:
   _brakeSpeed: 4
   _boostSpeed: 8
   _speedMultiplierIncreasePerPhase: 0.2
-  _jumpHeight: 4
+  _jumpHeight: 5
   _floorCollider: {fileID: 514461688}
   _invincibleTime: 1.5
   _damageFlashDuration: 0.15
@@ -3701,6 +3701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::GimmickSpawner
   playerTransform: {fileID: 1532929578}
+  targetCamera: {fileID: 519420031}
   wallPrefabs:
   - {fileID: 7644017795123417090, guid: 364596eb465827d43b3c88aaca3f3a68, type: 3}
   - {fileID: 2742059519562163414, guid: d524f48c7846f40f5a75a2e906aba5b2, type: 3}
@@ -3708,7 +3709,10 @@ MonoBehaviour:
   - {fileID: 6733628397053268548, guid: 6d848cf1ef3e045779033fef6630e830, type: 3}
   - {fileID: 4607105222656097486, guid: d6a20869005454c11aefb62a67819dc3, type: 3}
   gimmickCountPerPhase: 10
-  wallDistance: 5
+  spawnPreloadDistance: 15
+  offscreenSpawnMargin: 1
+  minGimmickDistance: 5
+  randomAdditionalDistance: 10
 --- !u!1 &1600499822
 GameObject:
   m_ObjectHideFlags: 0
@@ -5505,7 +5509,7 @@ Transform:
   m_GameObject: {fileID: 987881748698436622}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 6, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5591,7 +5595,7 @@ MonoBehaviour:
     AngularDampingMode: 0
     RotationDamping: {x: 0, y: 0, z: 0}
     QuaternionDamping: 0
-  FollowOffset: {x: 0, y: 0, z: -10}
+  FollowOffset: {x: 6, y: 0, z: -10}
 --- !u!114 &6056547754943927767
 MonoBehaviour:
   m_ObjectHideFlags: 0
