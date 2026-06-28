@@ -31,19 +31,5 @@ namespace MyProject.View
             AudioPlayerView.Instance?.PlaySe(clip);
         }
 
-        protected void PlayBgm(AudioClip clip)
-        {
-            if (clip == null)
-            {
-                return;
-            }
-
-            AudioPlayerView.Instance?.PlayBgm(clip);
-        }
-
-        protected void StopBgm()
-        {
-            AudioPlayerView.Instance?.StopBgm();
-        }
     }
 }

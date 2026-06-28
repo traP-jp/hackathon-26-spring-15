@@ -17,7 +17,6 @@ namespace MyProject.View
         public Observable<Unit> GimmickCleared => gimmickSpawner.GimmickCleared;
         public Observable<Unit> PhaseCompleted => gimmickSpawner.PhaseCompleted;
 
-        [SerializeField] AudioClip bgmClip;
         [SerializeField] AudioClip quitSeClip;
         [SerializeField] PlayerView player;
         [SerializeField] GimmickSpawner gimmickSpawner;
@@ -40,7 +39,6 @@ namespace MyProject.View
 
         public override async UniTask ShowAsync(CancellationToken ct)
         {
-            PlayBgm(bgmClip);
             gameObject.SetActive(true);
             await UniTask.WhenAll(
                 animationTimeline.ShowAsync(ct),

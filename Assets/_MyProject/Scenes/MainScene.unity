@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 99042497}
   - component: {fileID: 99042499}
   - component: {fileID: 99042498}
+  - component: {fileID: 99042500}
   m_Layer: 0
   m_Name: NaviText
   m_TagString: Untagged
@@ -190,7 +191,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -452, y: -207}
+  m_AnchoredPosition: {x: -440, y: -150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &99042498
@@ -249,6 +250,21 @@ MonoBehaviour:
     <Fade>k__BackingField:
       <IsFade>k__BackingField: 1
       <Ease>k__BackingField: 8
+--- !u!114 &99042500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99042496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa3129b4876bc488281180b98d21b869, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MyProject.View::MyProject.View.ScaleBreathingAnimator
+  playOnEnable: 1
+  scaleAmplitude: 0.04
+  duration: 1.6
 --- !u!1 &116557185 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8517326770359189508, guid: 31cc4c94aed13244981053c3960021f0, type: 3}
@@ -281,15 +297,15 @@ RectTransform:
   m_GameObject: {fileID: 204834856}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.1, y: 2.1, z: 2.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 912734243}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1800, y: 3200}
+  m_AnchoredPosition: {x: -47, y: 70}
+  m_SizeDelta: {x: 900, y: 1600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &204834858
 MonoBehaviour:
@@ -410,7 +426,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1562,7 +1578,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd91423626e678240bc141f41d5e1050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::MyProject.View.GameViewHub
-  bgmClip: {fileID: 0}
   quitSeClip: {fileID: 8300000, guid: 331ef2fad7ee24f41979789538d9de65, type: 3}
   player: {fileID: 1532929579}
   gimmickSpawner: {fileID: 1574526375}
@@ -1719,7 +1734,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 521, y: 488}
+  m_AnchoredPosition: {x: 530, y: 485}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &767210417
@@ -2000,8 +2015,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 216
-  m_fontSizeBase: 216
+  m_fontSize: 224
+  m_fontSizeBase: 224
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2088,7 +2103,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 508, y: -956}
+  m_AnchoredPosition: {x: 476, y: -1079}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &912734244
@@ -2182,7 +2197,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 147}
+  m_AnchoredPosition: {x: 0, y: 160}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &922782782
@@ -2845,7 +2860,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -207}
+  m_AnchoredPosition: {x: 0, y: -180}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1110174254
@@ -3235,6 +3250,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: MyProject.View::MyProject.View.RootViewHub
   audioSlider: {fileID: 2027696808}
   audioButton: {fileID: 1669529497}
+  bgmClip: {fileID: 8300000, guid: 5fecc14bac83941edb62ed459e3860a8, type: 3}
   views:
   - {fileID: 2027696808}
   - {fileID: 1669529497}
@@ -3287,8 +3303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcbae03c731faea4bba055adc514d93b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: MyProject.View::MyProject.View.AudioPlayerView
-  seAudioSource: {fileID: 1091782873}
-  bgmAudioSource: {fileID: 341459405}
+  seAudioSource: {fileID: 341459405}
+  bgmAudioSource: {fileID: 1091782873}
   audioMixer: {fileID: 24100000, guid: 8c41a9b04d5628a4d89801de06ba4650, type: 2}
   bgmVolumeParameter: BGMVolume
   seVolumeParameter: SEVolume
@@ -4219,7 +4235,7 @@ MonoBehaviour:
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 20
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -4248,7 +4264,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1656883897
@@ -4697,8 +4713,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 128
-  m_fontSizeBase: 128
+  m_fontSize: 192
+  m_fontSizeBase: 192
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4890,7 +4906,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -529, y: 488}
+  m_AnchoredPosition: {x: -530, y: 485}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1788832351
@@ -5007,7 +5023,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '- PRESS ANY KEY! -'
+  m_text: '- PRESS ANY KEY -'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 21a189847b3124279b3c924ac3092d0f, type: 2}
   m_sharedMaterial: {fileID: 7801498234682392528, guid: 21a189847b3124279b3c924ac3092d0f, type: 2}
@@ -5122,7 +5138,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -452, y: 147}
+  m_AnchoredPosition: {x: -440, y: 80}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1871397585

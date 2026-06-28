@@ -31,7 +31,6 @@ namespace MyProject.View
 
         public override async UniTask ShowAsync(CancellationToken ct)
         {
-            StopBgm();
             gameObject.SetActive(true);
             await animationTimeline.ShowAsync(ct);
             titleActionsObserver.Enable();

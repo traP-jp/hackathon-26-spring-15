@@ -53,7 +53,7 @@ namespace MyProject.View
             volume.Dispose();
         }
 
-        public void PlayBgm(AudioClip clip, bool loop = true)
+        public void PlayBgm(AudioClip clip)
         {
             if (bgmAudioSource.clip == clip && bgmAudioSource.isPlaying)
             {
@@ -66,7 +66,7 @@ namespace MyProject.View
             }
 
             bgmAudioSource.clip = clip;
-            bgmAudioSource.loop = loop;
+            bgmAudioSource.loop = true;
             bgmAudioSource.Play();
         }
 
@@ -78,11 +78,6 @@ namespace MyProject.View
             }
 
             seAudioSource.PlayOneShot(clip);
-        }
-
-        public void StopBgm()
-        {
-            bgmAudioSource.Stop();
         }
 
         public void SetVolume(float volume)

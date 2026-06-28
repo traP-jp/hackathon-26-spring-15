@@ -53,7 +53,7 @@ namespace MyProject.View
 
         public void SetHealth(int health)
         {
-            text.text = $"HP: {health}";
+            text.text = $"LIFE: {health}";
         }
     }
 }
